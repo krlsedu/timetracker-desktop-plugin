@@ -1,3 +1,6 @@
+package com.krlsedu.timetracker;
+
+import com.krlsedu.timetracker.model.AplicationStat;
 import com.sun.jna.Native;
 import com.sun.jna.Pointer;
 import com.sun.jna.platform.win32.Kernel32;
@@ -7,22 +10,22 @@ import com.sun.jna.platform.win32.WinNT;
 import com.sun.jna.ptr.IntByReference;
 import com.sun.jna.ptr.PointerByReference;
 
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
-public class Monitor {
-	
+public class Core {
 	private static final int MAX_TITLE_LENGTH = 1024;
 	
-	private static final Map<String, Long> timeMap = new HashMap<>();
+	private static final int waitTime = 500;
 	
-	private static final int waitTime = 100;
+	private static List<AplicationStat> aplicationStatList = new ArrayList<>();
 	
-	public static void main(String[] args) throws Exception {
+	public static void start() throws Exception {
 		WinDef.HWND prevForegroundWindow = null;
 		Date now;
 		Date ant;
+		AplicationStat aplicationStat = null;
 		while (true) {
 			Thread.sleep(waitTime);
 			
@@ -32,19 +35,24 @@ public class Monitor {
 			if (foregroundWindow == null) {
 				continue;
 			}
-			
 			String fgImageName = getImageName(foregroundWindow);
 			if (fgImageName != null) {
-				timeMap.putIfAbsent(fgImageName, 0L);
 				if (foregroundWindow.equals(prevForegroundWindow)) {
-					timeMap.put(fgImageName, timeMap.get(fgImageName) + waitTime);
+					aplicationStat.setTimeSpentMilis(aplicationStat.getTimeSpentMilis() + waitTime);
 				} else {
-					System.out.println(fgImageName);
-					char[] buffer = new char[MAX_TITLE_LENGTH * 2];
-					User32DLL.GetWindowTextW(User32DLL.GetForegroundWindow(), buffer, MAX_TITLE_LENGTH);
-					System.out.println("Janela ativa: " + Native.toString(buffer));
+					if (prevForegroundWindow != null) {
+						aplicationStat.setDateEnd(new Date());
+						System.out.println(aplicationStat);
+						aplicationStatList.add(aplicationStat);
+						aplicationStat = new AplicationStat();
+						aplicationStat.setName(fgImageName);
+						char[] buffer = new char[MAX_TITLE_LENGTH * 2];
+						User32DLL.GetWindowTextW(User32DLL.GetForegroundWindow(), buffer, MAX_TITLE_LENGTH);
+						System.out.println("Janela ativa: " + Native.toString(buffer));
+					} else {
+						aplicationStat = new AplicationStat();
+					}
 					prevForegroundWindow = foregroundWindow;
-					System.out.println(timeMap);
 				}
 			}
 		}
