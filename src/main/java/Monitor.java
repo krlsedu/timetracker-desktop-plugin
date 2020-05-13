@@ -7,33 +7,46 @@ import com.sun.jna.platform.win32.WinNT;
 import com.sun.jna.ptr.IntByReference;
 import com.sun.jna.ptr.PointerByReference;
 
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
 public class Monitor {
 	
 	private static final int MAX_TITLE_LENGTH = 1024;
 	
+	private static final Map<String, Long> timeMap = new HashMap<>();
+	
+	private static final int waitTime = 100;
+	
 	public static void main(String[] args) throws Exception {
-		WinDef.HWND prevFg = null;
-		
+		WinDef.HWND prevForegroundWindow = null;
+		Date now;
+		Date ant;
 		while (true) {
-			Thread.sleep(200);
+			Thread.sleep(waitTime);
 			
-			WinDef.HWND fg = User32.INSTANCE.GetForegroundWindow();
 			
-			if (fg != null && fg.equals(prevFg)) {
+			WinDef.HWND foregroundWindow = User32.INSTANCE.GetForegroundWindow();
+			
+			if (foregroundWindow == null) {
 				continue;
 			}
 			
-			String fgImageName = getImageName(fg);
-			if (fgImageName == null) {
-				System.out.println("Failed to get the image name!");
-			} else {
-				System.out.println(fgImageName);
-				char[] buffer = new char[MAX_TITLE_LENGTH * 2];
-				User32DLL.GetWindowTextW(User32DLL.GetForegroundWindow(), buffer, MAX_TITLE_LENGTH);
-				System.out.println("Active window title: " + Native.toString(buffer));
+			String fgImageName = getImageName(foregroundWindow);
+			if (fgImageName != null) {
+				timeMap.putIfAbsent(fgImageName, 0L);
+				if (foregroundWindow.equals(prevForegroundWindow)) {
+					timeMap.put(fgImageName, timeMap.get(fgImageName) + waitTime);
+				} else {
+					System.out.println(fgImageName);
+					char[] buffer = new char[MAX_TITLE_LENGTH * 2];
+					User32DLL.GetWindowTextW(User32DLL.GetForegroundWindow(), buffer, MAX_TITLE_LENGTH);
+					System.out.println("Janela ativa: " + Native.toString(buffer));
+					prevForegroundWindow = foregroundWindow;
+					System.out.println(timeMap);
+				}
 			}
-			
-			prevFg = fg;
 		}
 		
 	}
