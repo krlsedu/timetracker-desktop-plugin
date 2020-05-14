@@ -1,5 +1,6 @@
 package com.krlsedu.timetracker;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.krlsedu.timetracker.model.AplicationStat;
 import com.sun.jna.Native;
 import com.sun.jna.Pointer;
@@ -19,16 +20,17 @@ public class Core {
 	
 	private static final int waitTime = 500;
 	
-	private static List<AplicationStat> aplicationStatList = new ArrayList<>();
+	private static final List<AplicationStat> aplicationStatList = new ArrayList<>();
 	
 	public static void start() throws Exception {
 		WinDef.HWND prevForegroundWindow = null;
 		Date now;
 		Date ant;
 		AplicationStat aplicationStat = null;
+		
+		ObjectMapper objectMapper = new ObjectMapper();
 		while (true) {
 			Thread.sleep(waitTime);
-			
 			
 			WinDef.HWND foregroundWindow = User32.INSTANCE.GetForegroundWindow();
 			
@@ -42,6 +44,7 @@ public class Core {
 				} else {
 					if (prevForegroundWindow != null) {
 						aplicationStat.setDateEnd(new Date());
+						System.out.println(Conector.post("http://127.0.0.1:8080/api/v1/log-aplication", objectMapper.writeValueAsString(aplicationStat)));
 						System.out.println(aplicationStat);
 						aplicationStatList.add(aplicationStat);
 						aplicationStat = new AplicationStat();
