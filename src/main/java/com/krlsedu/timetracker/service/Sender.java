@@ -1,4 +1,6 @@
-package com.krlsedu.timetracker;
+package com.krlsedu.timetracker.service;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -8,8 +10,18 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 
-public class Conector {
-	public Conector() {
+public class Sender {
+	
+	private static ObjectMapper objectMapper = null;
+	
+	public Sender() {
+	}
+	
+	public static ObjectMapper getObjectMapper(){
+		if (objectMapper == null) {
+			objectMapper = new ObjectMapper();
+		}
+		return objectMapper;
 	}
 	
 	public static boolean post(String url, String body) {
