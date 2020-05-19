@@ -12,7 +12,7 @@ public class Conector {
 	public Conector() {
 	}
 	
-	public static String post(String url, String body) {
+	public static boolean post(String url, String body) {
 		PrintWriter out = null;
 		BufferedReader in = null;
 		String result = "";
@@ -36,8 +36,10 @@ public class Conector {
 			while ((line = in.readLine()) != null) {
 				result += "/n" + line;
 			}
+			System.out.println(result);
 		} catch (Exception e) {
 			e.printStackTrace();
+			return false;
 		} finally {
 			try {
 				if (out != null) {
@@ -50,7 +52,7 @@ public class Conector {
 				ex.printStackTrace();
 			}
 		}
-		return result;
+		return true;
 	}
 	
 	public void get() {

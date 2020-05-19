@@ -1,7 +1,8 @@
 package com.krlsedu.timetracker;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.krlsedu.timetracker.model.AplicationStat;
+import com.krlsedu.timetracker.model.Application;
+import com.krlsedu.timetracker.model.ApplicationDetail;
 import com.sun.jna.Native;
 import com.sun.jna.Pointer;
 import com.sun.jna.platform.win32.Kernel32;
@@ -20,13 +21,16 @@ public class Core {
 	
 	private static final int waitTime = 500;
 	
-	private static final List<AplicationStat> aplicationStatList = new ArrayList<>();
+	private static final List<Application> aplicationList = new ArrayList<>();
+	private static final List<ApplicationDetail> aplicationDetailList = new ArrayList<>();
 	
 	public static void start() throws Exception {
 		WinDef.HWND prevForegroundWindow = null;
+		String prevForegroundDetail = null;
 		Date now;
 		Date ant;
-		AplicationStat aplicationStat = null;
+		Application aplication = null;
+		ApplicationDetail aplicationDetail = null;
 		
 		ObjectMapper objectMapper = new ObjectMapper();
 		while (true) {
@@ -40,26 +44,70 @@ public class Core {
 			String fgImageName = getImageName(foregroundWindow);
 			if (fgImageName != null) {
 				if (foregroundWindow.equals(prevForegroundWindow)) {
-					aplicationStat.setTimeSpentMilis(aplicationStat.getTimeSpentMilis() + waitTime);
+					aplication.setTimeSpentMillis(new Date().getTime() - aplication.getDateIni().getTime());
 				} else {
 					if (prevForegroundWindow != null) {
-						aplicationStat.setDateEnd(new Date());
-						System.out.println(Conector.post("http://127.0.0.1:8080/api/v1/log-aplication", objectMapper.writeValueAsString(aplicationStat)));
-						System.out.println(aplicationStat);
-						aplicationStatList.add(aplicationStat);
-						aplicationStat = new AplicationStat();
-						aplicationStat.setName(fgImageName);
-						char[] buffer = new char[MAX_TITLE_LENGTH * 2];
-						User32DLL.GetWindowTextW(User32DLL.GetForegroundWindow(), buffer, MAX_TITLE_LENGTH);
-						System.out.println("Janela ativa: " + Native.toString(buffer));
+						aplication.setDateEnd(new Date());
+						aplication.setTimeSpentMillis(aplication.getDateEnd().getTime() - aplication.getDateIni().getTime());
+						if (!Conector.post("http://127.0.0.1:8080/api/v1/log-application", objectMapper.writeValueAsString(aplication))) {
+							aplicationList.add(aplication);
+						}
+						System.out.println(aplication);
+						aplication = new Application();
+						aplication.setName(fgImageName);
+						aplication.setDateIni(new Date());
 					} else {
-						aplicationStat = new AplicationStat();
+						aplication = new Application();
+						aplication.setName(fgImageName);
+						aplication.setDateIni(new Date());
 					}
 					prevForegroundWindow = foregroundWindow;
 				}
+				
+				
+				char[] buffer = new char[MAX_TITLE_LENGTH * 2];
+				User32DLL.GetWindowTextW(foregroundWindow, buffer, MAX_TITLE_LENGTH);
+				String foregroundDeteail = Native.toString(buffer);
+				System.out.println("Janela ativa: " + foregroundDeteail);
+				if (foregroundDeteail.equals(prevForegroundDetail)) {
+					if (aplicationDetail == null) {
+						aplicationDetail = new ApplicationDetail();
+						aplicationDetail.setName(aplication.getName());
+						aplicationDetail.setActivityDetail(foregroundDeteail);
+						aplicationDetail.setDateIni(new Date());
+					} else {
+						aplicationDetail.setTimeSpentMillis(new Date().getTime() - aplicationDetail.getDateIni().getTime());
+					}
+				} else {
+					if (aplicationDetail != null) {
+						
+						aplicationDetail.setDateEnd(new Date());
+						aplicationDetail.setTimeSpentMillis(aplicationDetail.getDateEnd().getTime() - aplicationDetail.getDateIni().getTime());
+						if (!Conector.post("http://127.0.0.1:8080/api/v1/log-application-detail", objectMapper.writeValueAsString(aplication))) {
+							aplicationDetailList.add(aplicationDetail);
+						}
+						System.out.println(aplicationDetail);
+						aplicationDetail = new ApplicationDetail();
+						aplicationDetail.setName(aplication.getName());
+						aplicationDetail.setActivityDetail(foregroundDeteail);
+						aplicationDetail.setDateIni(new Date());
+					}
+				}
+				prevForegroundDetail = foregroundDeteail;
+			}
+			for (Application app :
+					aplicationList) {
+				if (Conector.post("http://127.0.0.1:8080/api/v1/log-application", objectMapper.writeValueAsString(app))) {
+					aplicationList.remove(app);
+				}
+			}
+			for (ApplicationDetail app :
+					aplicationDetailList) {
+				if (Conector.post("http://127.0.0.1:8080/api/v1/log-application-detail", objectMapper.writeValueAsString(app))) {
+					aplicationDetailList.remove(app);
+				}
 			}
 		}
-		
 	}
 	
 	private static String getImageName(WinDef.HWND window) {
