@@ -18,6 +18,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import static com.krlsedu.timetracker.Win32IdleTime.getIdleTimeMillisWin32;
+
 public class Core {
 	private static final int MAX_TITLE_LENGTH = 1024;
 	
@@ -46,7 +48,8 @@ public class Core {
 		}
 		while (true) {
 			Thread.sleep(waitTime);
-			
+			Integer idleTime = Win32IdleTime.getIdleTimeMillisWin32();
+			//Implementar tempo ocioso
 			WinDef.HWND foregroundWindow = User32.INSTANCE.GetForegroundWindow();
 			
 			if (foregroundWindow == null) {
