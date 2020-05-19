@@ -48,7 +48,7 @@ public class Core {
 		}
 		while (true) {
 			Thread.sleep(waitTime);
-			Integer idleTime = Win32IdleTime.getIdleTimeMillisWin32();
+//			Integer idleTime = Win32IdleTime.getIdleTimeMillisWin32();
 			//Implementar tempo ocioso
 			WinDef.HWND foregroundWindow = User32.INSTANCE.GetForegroundWindow();
 			
