@@ -27,26 +27,25 @@ public class Sender {
 	public static boolean post(String url, String body) {
 		PrintWriter out = null;
 		BufferedReader in = null;
-		String result = "";
+		StringBuilder result = new StringBuilder();
 		try {
 			URL realUrl = new URL(url);
-			// build connection
 			URLConnection conn = realUrl.openConnection();
-			// set request properties
+			
 			conn.setRequestProperty("accept", "application/json");
 			conn.setRequestProperty("Content-Type", "application/json");
 			conn.setRequestProperty("user-agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1)");
-			// enable output and input
+			
 			conn.setDoOutput(true);
 			conn.setDoInput(true);
 			out = new PrintWriter(conn.getOutputStream());
-			// send POST DATA
+			
 			out.write(body);
 			out.flush();
 			in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 			String line;
 			while ((line = in.readLine()) != null) {
-				result += "/n" + line;
+				result.append("/n").append(line);
 			}
 			System.out.println(result);
 		} catch (Exception e) {

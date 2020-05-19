@@ -22,6 +22,6 @@ public class Monitor {
 	private static final int waitTime = 100;
 	
 	public static void main(String[] args) throws Exception {
-		new Core().start();
+		Core.start();
 	}
 }
