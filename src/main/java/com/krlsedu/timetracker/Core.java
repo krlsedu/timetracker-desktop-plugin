@@ -12,6 +12,8 @@ import com.sun.jna.platform.win32.WinNT;
 import com.sun.jna.ptr.IntByReference;
 import com.sun.jna.ptr.PointerByReference;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -33,6 +35,15 @@ public class Core {
 		ApplicationDetail aplicationDetail = null;
 		
 		ObjectMapper objectMapper = new ObjectMapper();
+		String hostName = null;
+		String osName = System.getProperty("os.name");
+		try {
+			InetAddress addr;
+			addr = InetAddress.getLocalHost();
+			hostName = addr.getHostName();
+		} catch (UnknownHostException ex) {
+			System.out.println("Hostname can not be resolved");
+		}
 		while (true) {
 			Thread.sleep(waitTime);
 			
@@ -49,7 +60,9 @@ public class Core {
 					if (prevForegroundWindow != null) {
 						aplication.setDateEnd(new Date());
 						aplication.setTimeSpentMillis(aplication.getDateEnd().getTime() - aplication.getDateIni().getTime());
-						if (!Conector.post("http://127.0.0.1:8080/api/v1/log-application", objectMapper.writeValueAsString(aplication))) {
+						aplication.setOsName(osName);
+						aplication.setHostName(hostName);
+						if (!Conector.post("http://192.168.0.8:8080/api/v1/log-application", objectMapper.writeValueAsString(aplication))) {
 							aplicationList.add(aplication);
 						}
 						System.out.println(aplication);
@@ -68,7 +81,6 @@ public class Core {
 				char[] buffer = new char[MAX_TITLE_LENGTH * 2];
 				User32DLL.GetWindowTextW(foregroundWindow, buffer, MAX_TITLE_LENGTH);
 				String foregroundDeteail = Native.toString(buffer);
-				System.out.println("Janela ativa: " + foregroundDeteail);
 				if (foregroundDeteail.equals(prevForegroundDetail)) {
 					if (aplicationDetail == null) {
 						aplicationDetail = new ApplicationDetail();
@@ -83,7 +95,9 @@ public class Core {
 						
 						aplicationDetail.setDateEnd(new Date());
 						aplicationDetail.setTimeSpentMillis(aplicationDetail.getDateEnd().getTime() - aplicationDetail.getDateIni().getTime());
-						if (!Conector.post("http://127.0.0.1:8080/api/v1/log-application-detail", objectMapper.writeValueAsString(aplication))) {
+						aplicationDetail.setOsName(osName);
+						aplicationDetail.setHostName(hostName);
+						if (!Conector.post("http://192.168.0.8:8080/api/v1/log-application-detail", objectMapper.writeValueAsString(aplicationDetail))) {
 							aplicationDetailList.add(aplicationDetail);
 						}
 						System.out.println(aplicationDetail);
@@ -95,18 +109,23 @@ public class Core {
 				}
 				prevForegroundDetail = foregroundDeteail;
 			}
+			List<Application> applicationListTemp = new ArrayList<>();
 			for (Application app :
 					aplicationList) {
-				if (Conector.post("http://127.0.0.1:8080/api/v1/log-application", objectMapper.writeValueAsString(app))) {
-					aplicationList.remove(app);
+				if (Conector.post("http://192.168.0.8:8080/api/v1/log-application", objectMapper.writeValueAsString(app))) {
+					applicationListTemp.add(app);
 				}
 			}
+			aplicationList.removeAll(applicationListTemp);
+			
+			List<ApplicationDetail> applicationDetailListTemp = new ArrayList<>();
 			for (ApplicationDetail app :
 					aplicationDetailList) {
-				if (Conector.post("http://127.0.0.1:8080/api/v1/log-application-detail", objectMapper.writeValueAsString(app))) {
-					aplicationDetailList.remove(app);
+				if (Conector.post("http://192.168.0.8:8080/api/v1/log-application-detail", objectMapper.writeValueAsString(app))) {
+					applicationDetailListTemp.add(app);
 				}
 			}
+			aplicationDetailList.removeAll(applicationDetailListTemp);
 		}
 	}
 	

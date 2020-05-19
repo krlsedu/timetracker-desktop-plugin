@@ -15,4 +15,6 @@ public class Application {
 	private Long timeSpentMillis;
 	private Date dateIni;
 	private Date dateEnd;
+	private String osName;
+	private String hostName;
 }

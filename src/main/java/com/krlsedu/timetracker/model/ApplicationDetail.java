@@ -11,10 +11,11 @@ import java.util.Date;
 @ToString
 @EqualsAndHashCode
 public class ApplicationDetail {
-	private Long id;
 	private String name;
 	private String activityDetail;
 	private Long timeSpentMillis;
 	private Date dateIni;
 	private Date dateEnd;
+	private String osName;
+	private String hostName;
 }
