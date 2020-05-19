@@ -24,7 +24,7 @@ public class Sender {
 		return objectMapper;
 	}
 	
-	public static boolean post(String url, String body) {
+	public static void post(String url, String body) {
 		PrintWriter out = null;
 		BufferedReader in = null;
 		StringBuilder result = new StringBuilder();
@@ -50,7 +50,11 @@ public class Sender {
 			System.out.println(result);
 		} catch (Exception e) {
 			e.printStackTrace();
-			return false;
+			try {
+				ErrorService.saveError(url,body);
+			} catch (Exception exception) {
+				exception.printStackTrace();
+			}
 		} finally {
 			try {
 				if (out != null) {
@@ -63,7 +67,6 @@ public class Sender {
 				ex.printStackTrace();
 			}
 		}
-		return true;
 	}
 	
 	public void get() {

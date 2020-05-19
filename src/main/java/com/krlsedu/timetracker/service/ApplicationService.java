@@ -10,7 +10,6 @@ import java.util.List;
 public class ApplicationService {
 	private static WinDef.HWND prevForegroundWindow = null;
 	private static Application aplication = null;
-	private static final List<Application> aplicationList = new ArrayList<>();
 	
 	public static void generateApplication(WinDef.HWND foregroundWindow) throws Exception {
 		if (!foregroundWindow.equals(prevForegroundWindow)) {
@@ -19,9 +18,7 @@ public class ApplicationService {
 				aplication.setTimeSpentMillis(aplication.getDateEnd().getTime() - aplication.getDateIni().getTime());
 				aplication.setOsName(SystenInfo.getOsName());
 				aplication.setHostName(SystenInfo.getHostName());
-				if (!Sender.post("http://192.168.0.8:8080/api/v1/log-application", Sender.getObjectMapper().writeValueAsString(aplication))) {
-					aplicationList.add(aplication);
-				}
+				Sender.post("http://192.168.0.8:8080/api/v1/log-application", Sender.getObjectMapper().writeValueAsString(aplication));
 				System.out.println(aplication);
 				aplication = new Application();
 				aplication.setName(User32DLL.getImageName(foregroundWindow));
@@ -33,14 +30,5 @@ public class ApplicationService {
 			}
 			prevForegroundWindow = foregroundWindow;
 		}
-		
-		List<Application> applicationListTemp = new ArrayList<>();
-		for (Application app :
-				aplicationList) {
-			if (Sender.post("http://192.168.0.8:8080/api/v1/log-application", Sender.getObjectMapper().writeValueAsString(app))) {
-				applicationListTemp.add(app);
-			}
-		}
-		aplicationList.removeAll(applicationListTemp);
 	}
 }

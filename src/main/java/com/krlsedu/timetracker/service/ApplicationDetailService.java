@@ -15,8 +15,6 @@ public class ApplicationDetailService {
 	
 	private static ApplicationDetail aplicationDetail = null;
 	
-	private static final List<ApplicationDetail> aplicationDetailList = new ArrayList<>();
-	
 	public static void generateApplicationDetail(WinDef.HWND foregroundWindow) throws Exception{
 		char[] buffer = new char[MAX_TITLE_LENGTH * 2];
 		User32DLL.GetWindowTextW(foregroundWindow, buffer, MAX_TITLE_LENGTH);
@@ -28,9 +26,7 @@ public class ApplicationDetailService {
 				aplicationDetail.setTimeSpentMillis(aplicationDetail.getDateEnd().getTime() - aplicationDetail.getDateIni().getTime());
 				aplicationDetail.setOsName(SystenInfo.getOsName());
 				aplicationDetail.setHostName(SystenInfo.getHostName());
-				if (!Sender.post("http://192.168.0.8:8080/api/v1/log-application-detail", Sender.getObjectMapper().writeValueAsString(aplicationDetail))) {
-					aplicationDetailList.add(aplicationDetail);
-				}
+				Sender.post("http://192.168.0.8:8080/api/v1/log-application-detail", Sender.getObjectMapper().writeValueAsString(aplicationDetail));
 				System.out.println(aplicationDetail);
 				aplicationDetail = new ApplicationDetail();
 				aplicationDetail.setName(User32DLL.getImageName(foregroundWindow));
@@ -47,14 +43,5 @@ public class ApplicationDetailService {
 			}
 		}
 		prevForegroundDetail = foregroundDeteail;
-		
-		List<ApplicationDetail> applicationDetailListTemp = new ArrayList<>();
-		for (ApplicationDetail app :
-				aplicationDetailList) {
-			if (Sender.post("http://192.168.0.8:8080/api/v1/log-application-detail", Sender.getObjectMapper().writeValueAsString(app))) {
-				applicationDetailListTemp.add(app);
-			}
-		}
-		aplicationDetailList.removeAll(applicationDetailListTemp);
 	}
 }
