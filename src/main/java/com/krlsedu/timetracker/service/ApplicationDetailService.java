@@ -31,10 +31,14 @@ public class ApplicationDetailService {
 				Sender.post(URL, aplicationDetail);
 				System.out.println(aplicationDetail);
 			}
-			aplicationDetail = new ApplicationDetail();
-			aplicationDetail.setName(User32DLL.getImageName(foregroundWindow));
-			aplicationDetail.setActivityDetail(foregroundDeteail);
-			aplicationDetail.setDateIni(new Date());
+			if (systemStat.isOnline()) {
+				aplicationDetail = new ApplicationDetail();
+				aplicationDetail.setName(User32DLL.getImageName(foregroundWindow));
+				aplicationDetail.setActivityDetail(foregroundDeteail);
+				aplicationDetail.setDateIni(new Date());
+			}else{
+				aplicationDetail = null;
+			}
 		}
 		prevForegroundDetail = foregroundDeteail;
 	}

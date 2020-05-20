@@ -50,6 +50,10 @@ public class SystemInfo {
 		return false;
 	}
 	
+	public boolean isOnline(){
+		return state.equals(State.ONLINE);
+	}
+	
 	enum State {
 		UNKNOWN, ONLINE, IDLE, AWAY
 	}

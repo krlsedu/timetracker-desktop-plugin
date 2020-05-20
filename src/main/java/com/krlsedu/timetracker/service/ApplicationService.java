@@ -27,10 +27,14 @@ public class ApplicationService {
 				
 			}
 			
-			aplication = new Application();
-			aplication.setName(User32DLL.getImageName(foregroundWindow));
-			aplication.setDateIni(new Date());
-			prevForegroundWindow = foregroundWindow;
+			if (systemStat.isOnline()) {
+				aplication = new Application();
+				aplication.setName(User32DLL.getImageName(foregroundWindow));
+				aplication.setDateIni(new Date());
+				prevForegroundWindow = foregroundWindow;
+			} else {
+				aplication = null;
+			}
 		}
 	}
 }
