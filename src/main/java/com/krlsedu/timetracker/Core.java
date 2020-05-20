@@ -1,15 +1,9 @@
 package com.krlsedu.timetracker;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.krlsedu.timetracker.model.Application;
-import com.krlsedu.timetracker.model.ApplicationDetail;
-import com.krlsedu.timetracker.service.*;
+import com.krlsedu.timetracker.service.ApplicationDetailService;
+import com.krlsedu.timetracker.service.ApplicationService;
 import com.sun.jna.platform.win32.User32;
 import com.sun.jna.platform.win32.WinDef;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 public class Core {
 	
@@ -19,17 +13,16 @@ public class Core {
 		
 		while (true) {
 			Thread.sleep(waitTime);
-//			Integer idleTime = Win32IdleTime.getIdleTimeMillisWin32();
-			//Implementar tempo ocioso
+			
 			WinDef.HWND foregroundWindow = User32.INSTANCE.GetForegroundWindow();
 			
 			if (foregroundWindow == null) {
 				continue;
 			}
 			
-			ApplicationService.generateApplication(foregroundWindow);
+			ApplicationService.generateApplicationInfo(foregroundWindow);
 			
-			ApplicationDetailService.generateApplicationDetail(foregroundWindow);
+			ApplicationDetailService.generateApplicationDetailInfo(foregroundWindow);
 			
 		}
 	}

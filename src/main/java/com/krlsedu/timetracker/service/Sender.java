@@ -17,14 +17,15 @@ public class Sender {
 	public Sender() {
 	}
 	
-	public static ObjectMapper getObjectMapper(){
+	public static ObjectMapper getObjectMapper() {
 		if (objectMapper == null) {
 			objectMapper = new ObjectMapper();
 		}
 		return objectMapper;
 	}
 	
-	public static void post(String url, String body) {
+	public static void post(String url, Object object) throws Exception {
+		String body = getObjectMapper().writeValueAsString(object);
 		PrintWriter out = null;
 		BufferedReader in = null;
 		StringBuilder result = new StringBuilder();
@@ -47,7 +48,6 @@ public class Sender {
 			while ((line = in.readLine()) != null) {
 				result.append("/n").append(line);
 			}
-			System.out.println(result);
 		} catch (Exception e) {
 			e.printStackTrace();
 			try {
