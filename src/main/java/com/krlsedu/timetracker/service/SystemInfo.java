@@ -7,10 +7,12 @@ import java.net.UnknownHostException;
 
 public class SystemInfo {
 	private static String osName = null;
+	
 	private static String hostName = null;
 	
 	private State state = State.UNKNOWN;
 	
+	private final int SECONDS_TO_IDLE = 30;
 	
 	public static String getOsName() {
 		if (osName == null) {
@@ -37,7 +39,7 @@ public class SystemInfo {
 		
 		int idleSec = Win32IdleTime.getIdleTimeMillisWin32() / 1000;
 		
-		State newState = idleSec < 30 ? State.ONLINE : State.IDLE;
+		State newState = idleSec < SECONDS_TO_IDLE ? State.ONLINE : State.IDLE;
 		
 		if (newState != state) {
 			state = newState;
