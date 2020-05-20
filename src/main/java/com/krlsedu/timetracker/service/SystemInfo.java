@@ -33,13 +33,16 @@ public class SystemInfo {
 		}
 		return hostName;
 	}
-	
+	private State getState(){
+		
+		int idleSec = Win32IdleTime.getIdleTimeMillisWin32() / 1000;
+		return idleSec < SECONDS_TO_IDLE ? State.ONLINE : State.IDLE;
+		
+	}
 	
 	public boolean isChangedState() {
 		
-		int idleSec = Win32IdleTime.getIdleTimeMillisWin32() / 1000;
-		
-		State newState = idleSec < SECONDS_TO_IDLE ? State.ONLINE : State.IDLE;
+		State newState = getState();
 		
 		if (newState != state) {
 			state = newState;
@@ -48,10 +51,11 @@ public class SystemInfo {
 		}
 		
 		return false;
+		
 	}
 	
 	public boolean isOnline(){
-		return state.equals(State.ONLINE);
+		return getState().equals(State.ONLINE);
 	}
 	
 	enum State {
