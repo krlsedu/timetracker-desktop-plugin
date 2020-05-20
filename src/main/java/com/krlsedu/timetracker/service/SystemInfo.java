@@ -35,7 +35,7 @@ public class SystemInfo {
 	}
 	
 	
-	public boolean isChangedToIdle() {
+	public boolean isChangedState() {
 		
 		int idleSec = Win32IdleTime.getIdleTimeMillisWin32() / 1000;
 		
@@ -44,7 +44,7 @@ public class SystemInfo {
 		if (newState != state) {
 			state = newState;
 			System.out.println(state);
-			return !state.equals(State.ONLINE);
+			return true;
 		}
 		
 		return false;

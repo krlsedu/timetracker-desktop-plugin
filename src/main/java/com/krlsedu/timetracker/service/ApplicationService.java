@@ -15,8 +15,8 @@ public class ApplicationService {
 	private static final SystemInfo systemStat = new SystemInfo();
 	
 	public static void generateApplicationInfo(WinDef.HWND foregroundWindow) throws Exception {
-		if (!foregroundWindow.equals(prevForegroundWindow) || systemStat.isChangedToIdle()) {
-			if (prevForegroundWindow != null) {
+		if (!foregroundWindow.equals(prevForegroundWindow) || systemStat.isChangedState()) {
+			if (aplication != null) {
 				
 				aplication.setDateEnd(new Date());
 				aplication.setTimeSpentMillis(aplication.getDateEnd().getTime() - aplication.getDateIni().getTime());

@@ -21,7 +21,7 @@ public class ApplicationDetailService {
 		char[] buffer = new char[MAX_TITLE_LENGTH * 2];
 		User32DLL.GetWindowTextW(foregroundWindow, buffer, MAX_TITLE_LENGTH);
 		String foregroundDeteail = Native.toString(buffer);
-		if (!foregroundDeteail.equals(prevForegroundDetail) || systemStat.isChangedToIdle()) {
+		if (!foregroundDeteail.equals(prevForegroundDetail) || systemStat.isChangedState()) {
 			if (aplicationDetail != null) {
 				
 				aplicationDetail.setDateEnd(new Date());
