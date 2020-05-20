@@ -27,7 +27,7 @@ public class SqlLitle {
 		}
 	}
 	
-	private static String getUrl(){
+	private static String getUrl() {
 		File f = new File("timeTracker.db");
 		Path currentRelativePath = Paths.get("");
 		String s = currentRelativePath.toAbsolutePath().toString();
@@ -55,14 +55,14 @@ public class SqlLitle {
 		
 	}
 	
-	public static List<Error> getErros(){
+	public static List<Error> getErros() {
 		String url = getUrl();
+		List<Error> errors = new ArrayList<>();
 		try {
 			Connection conn = DriverManager.getConnection(url);
 			PreparedStatement preparedStatement = conn.prepareStatement("select * from error");
 			
 			ResultSet resultSet = preparedStatement.executeQuery();
-			List<Error> errors = new ArrayList<>();
 			while (resultSet.next()) {
 				Error error = new Error();
 				error.setUrl(resultSet.getString(1));
@@ -72,10 +72,9 @@ public class SqlLitle {
 			preparedStatement = conn.prepareStatement("delete from error");
 			preparedStatement.execute();
 			conn.close();
-			return errors;
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		return new ArrayList<>();
+		return errors;
 	}
 }
