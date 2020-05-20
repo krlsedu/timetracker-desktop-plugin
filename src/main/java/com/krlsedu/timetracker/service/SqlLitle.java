@@ -69,7 +69,8 @@ public class SqlLitle {
 				error.setJson(resultSet.getString(2));
 				errors.add(error);
 			}
-			preparedStatement.execute("delete from error");
+			preparedStatement = conn.prepareStatement("delete from error");
+			preparedStatement.execute();
 			conn.close();
 			return errors;
 		} catch (SQLException e) {
