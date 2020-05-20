@@ -26,6 +26,11 @@ public class Sender {
 	
 	public static void post(String url, Object object) throws Exception {
 		String body = getObjectMapper().writeValueAsString(object);
+		post(url, body);
+	}
+	
+	public static void post(String url, String body) throws Exception {
+		
 		PrintWriter out = null;
 		BufferedReader in = null;
 		StringBuilder result = new StringBuilder();
@@ -51,7 +56,7 @@ public class Sender {
 		} catch (Exception e) {
 			e.printStackTrace();
 			try {
-				ErrorService.saveError(url,body);
+				ErrorService.saveError(url, body);
 			} catch (Exception exception) {
 				exception.printStackTrace();
 			}
