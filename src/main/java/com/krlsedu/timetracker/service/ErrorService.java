@@ -18,10 +18,11 @@ public class ErrorService {
 	}
 	
 	public static void reSendErrors() throws Exception {
-		List<Error> errors = SqlLitle.getErros();
+		List<Error> errors = SqlLitle.getErrors();
 		for (Error error :
 				errors) {
 			Sender.post(error.getUrl(),error.getJson());
+			System.out.println(error);
 		}
 	}
 }

@@ -14,4 +14,8 @@ public class OfflineMode {
 	public static void setOn(boolean on) {
 		OfflineMode.on = on;
 	}
+	
+	public static void syncErros() throws Exception{
+		ErrorService.reSendErrors();
+	}
 }

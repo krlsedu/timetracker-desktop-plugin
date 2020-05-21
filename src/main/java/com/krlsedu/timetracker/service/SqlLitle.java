@@ -10,30 +10,27 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SqlLitle {
+	
+	private static final String DB_NAME = ".timeTracker.db";
+	
 	public static void createNewDatabase(String url) {
-		
-		
-		try (Connection conn = DriverManager.getConnection(url)) {
-			if (conn != null) {
-				DatabaseMetaData meta = conn.getMetaData();
-				Statement statement = conn.createStatement();
-				statement.executeQuery("CREATE TABLE error( url text null, json text)").close();
-				System.out.println("The driver name is " + meta.getDriverName());
-				System.out.println("A new database has been created.");
-			}
-			
+		try {
+			Connection conn = DriverManager.getConnection(url);
+			Statement statement = conn.createStatement();
+			statement.executeQuery("CREATE TABLE error( url text null, json text)").close();
+			conn.close();
 		} catch (SQLException e) {
-			System.out.println(e.getMessage());
+			e.printStackTrace();
 		}
 	}
 	
 	private static String getUrl() {
-		File f = new File("timeTracker.db");
+		File file = new File(DB_NAME);
 		Path currentRelativePath = Paths.get("");
-		String s = currentRelativePath.toAbsolutePath().toString();
-		String url = "jdbc:sqlite:" + s + "\\" + "timeTracker.db";
+		String relativePath = currentRelativePath.toAbsolutePath().toString();
+		String url = "jdbc:sqlite:" + relativePath + "\\" + DB_NAME;
 		
-		if (!(f.exists() && !f.isDirectory())) {
+		if (!(file.exists() && !file.isDirectory())) {
 			createNewDatabase(url);
 		}
 		
@@ -55,7 +52,7 @@ public class SqlLitle {
 		
 	}
 	
-	public static List<Error> getErros() {
+	public static List<Error> getErrors() {
 		String url = getUrl();
 		List<Error> errors = new ArrayList<>();
 		try {

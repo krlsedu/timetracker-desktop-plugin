@@ -7,8 +7,14 @@ public class Monitor {
 	public static void main(String[] args) throws Exception {
 		for (String arg :
 				args) {
-			if (arg.equals("--offline")) {
-				OfflineMode.setOn(true);
+			switch (arg){
+				case "--offline":
+					OfflineMode.setOn(true);
+					break;
+				case "--sync-errors":
+					OfflineMode.syncErros();
+					System.exit(0);
+					break;
 			}
 		}
 		Core.start();

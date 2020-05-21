@@ -40,7 +40,7 @@ public class Core {
 		try {
 			while (true) {
 				ErrorService.reSendErrors();
-				Thread.sleep(1000 * 60);
+				Thread.sleep(1000 * 60 * 60);
 			}
 		} catch (Exception e){
 			e.printStackTrace();
