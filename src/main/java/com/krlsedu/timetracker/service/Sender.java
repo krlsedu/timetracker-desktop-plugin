@@ -30,6 +30,10 @@ public class Sender {
 	}
 	
 	public static void post(String url, String body) throws Exception {
+		if (OfflineMode.isOn()) {
+			OfflineMode.salva(url, body);
+			return;
+		}
 		
 		PrintWriter out = null;
 		BufferedReader in = null;
