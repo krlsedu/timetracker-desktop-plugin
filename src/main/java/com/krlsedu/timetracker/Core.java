@@ -39,8 +39,8 @@ public class Core {
 	private static void reSendErrors(){
 		try {
 			while (true) {
-				Thread.sleep(1000 * 60);
 				ErrorService.reSendErrors();
+				Thread.sleep(1000 * 60);
 			}
 		} catch (Exception e){
 			e.printStackTrace();
