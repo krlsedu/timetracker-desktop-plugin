@@ -1,7 +1,5 @@
 package com.krlsedu.timetracker.service;
 
-import com.krlsedu.timetracker.Win32IdleTime;
-
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 

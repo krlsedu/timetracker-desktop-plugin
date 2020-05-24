@@ -3,6 +3,7 @@ package com.krlsedu.timetracker;
 import com.krlsedu.timetracker.service.ApplicationDetailService;
 import com.krlsedu.timetracker.service.ApplicationService;
 import com.krlsedu.timetracker.service.ErrorService;
+import com.krlsedu.timetracker.service.OfflineMode;
 import com.sun.jna.platform.win32.User32;
 import com.sun.jna.platform.win32.WinDef;
 
@@ -39,13 +40,13 @@ public class Core {
 	private static void reSendErrors(){
 		try {
 			while (true) {
-				ErrorService.reSendErrors();
+				if (!OfflineMode.isOn()) {
+					ErrorService.reSendErrors();
+				}
 				Thread.sleep(1000 * 60 * 60);
 			}
 		} catch (Exception e){
 			e.printStackTrace();
 		}
 	}
-	
-	
 }

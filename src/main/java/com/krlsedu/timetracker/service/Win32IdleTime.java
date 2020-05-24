@@ -1,4 +1,4 @@
-package com.krlsedu.timetracker;
+package com.krlsedu.timetracker.service;
 
 import com.sun.jna.Native;
 import com.sun.jna.Structure;
