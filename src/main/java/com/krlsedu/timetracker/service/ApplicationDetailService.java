@@ -7,6 +7,9 @@ import com.sun.jna.platform.win32.WinDef;
 import java.util.Date;
 
 public class ApplicationDetailService {
+	private ApplicationDetailService() {
+	}
+	
 	private static final int MAX_TITLE_LENGTH = 1024;
 	
 	private static String prevForegroundDetail = null;
@@ -28,7 +31,8 @@ public class ApplicationDetailService {
 				aplicationDetail.setTimeSpentMillis(aplicationDetail.getDateEnd().getTime() - aplicationDetail.getDateIni().getTime());
 				aplicationDetail.setOsName(SystemInfo.getOsName());
 				aplicationDetail.setHostName(SystemInfo.getHostName());
-				Sender.post(URL, aplicationDetail);
+//				Sender.post(URL, aplicationDetail);
+				WakaTimeCli.appendHeartbeat(aplicationDetail);
 				System.out.println(aplicationDetail);
 			}
 			if (systemStat.isOnline()) {

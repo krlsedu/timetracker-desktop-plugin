@@ -1,6 +1,7 @@
 package com.krlsedu.timetracker;
 
 import com.krlsedu.timetracker.service.OfflineMode;
+import org.apache.log4j.BasicConfigurator;
 
 public class Monitor {
 	
@@ -17,6 +18,7 @@ public class Monitor {
 					break;
 			}
 		}
+		BasicConfigurator.configure();
 		Core.start();
 	}
 }

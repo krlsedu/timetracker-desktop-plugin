@@ -1,7 +1,5 @@
 package com.krlsedu.timetracker.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -10,19 +8,14 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 
+import static com.krlsedu.timetracker.service.WakaTimeCli.getObjectMapper;
+
 public class Sender {
 	
-	private static ObjectMapper objectMapper = null;
 	
 	public Sender() {
 	}
 	
-	public static ObjectMapper getObjectMapper() {
-		if (objectMapper == null) {
-			objectMapper = new ObjectMapper();
-		}
-		return objectMapper;
-	}
 	
 	public static void post(String url, Object object) throws Exception {
 		String body = getObjectMapper().writeValueAsString(object);

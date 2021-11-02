@@ -1,25 +1,29 @@
 package com.krlsedu.timetracker;
 
 import com.krlsedu.timetracker.service.ApplicationDetailService;
-import com.krlsedu.timetracker.service.ApplicationService;
 import com.krlsedu.timetracker.service.ErrorService;
 import com.krlsedu.timetracker.service.OfflineMode;
+import com.krlsedu.timetracker.service.WakaTimeCli;
 import com.sun.jna.platform.win32.User32;
 import com.sun.jna.platform.win32.WinDef;
 
 public class Core {
 	
-	private static final int waitTime = 100;
+	private static final int WAIT_TIME = 100;
+	
+	private Core() {
+	}
 	
 	public static void start() {
+		WakaTimeCli.init();
 		new Thread(Core::tracker).start();
-		new Thread(Core::reSendErrors).start();
+		//new Thread(Core::reSendErrors).start();
 	}
 	
 	private static void tracker() {
 		try {
-			while (true) {
-				Thread.sleep(waitTime);
+			do {
+				Thread.sleep(WAIT_TIME);
 				
 				WinDef.HWND foregroundWindow = User32.INSTANCE.GetForegroundWindow();
 				
@@ -27,11 +31,11 @@ public class Core {
 					continue;
 				}
 				
-				ApplicationService.generateApplicationInfo(foregroundWindow);
+				//ApplicationService.generateApplicationInfo(foregroundWindow);
 				
 				ApplicationDetailService.generateApplicationDetailInfo(foregroundWindow);
 				
-			}
+			} while (true);
 		}catch (Exception e){
 			e.printStackTrace();
 		}
@@ -39,12 +43,12 @@ public class Core {
 	
 	private static void reSendErrors(){
 		try {
-			while (true) {
+			do {
 				if (!OfflineMode.isOn()) {
 					ErrorService.reSendErrors();
 				}
 				Thread.sleep(1000 * 60 * 60);
-			}
+			} while (true);
 		} catch (Exception e){
 			e.printStackTrace();
 		}

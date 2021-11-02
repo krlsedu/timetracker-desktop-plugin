@@ -22,7 +22,7 @@ public class ApplicationService {
 				aplication.setTimeSpentMillis(aplication.getDateEnd().getTime() - aplication.getDateIni().getTime());
 				aplication.setOsName(SystemInfo.getOsName());
 				aplication.setHostName(SystemInfo.getHostName());
-				Sender.post(URL, aplication);
+				//Sender.post(URL, aplication);
 				System.out.println(aplication);
 				
 			}
