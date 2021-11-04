@@ -12,10 +12,14 @@ import java.util.Date;
 @EqualsAndHashCode
 public class ApplicationDetail {
 	private String name;
+	private String processName;
 	private String activityDetail;
 	private Long timeSpentMillis;
 	private Date dateIni;
 	private Date dateEnd;
 	private String osName;
 	private String hostName;
+	private ConfigApp appConfig;
+	private boolean sendHeartbeat;
+	private Heartbeat heartbeat;
 }

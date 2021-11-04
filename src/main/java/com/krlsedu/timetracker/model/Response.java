@@ -8,16 +8,17 @@ Website:     https://wakatime.com/
 
 package com.krlsedu.timetracker.model;
 
+import lombok.*;
 
+@Setter
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
+@ToString
+@EqualsAndHashCode
 public class Response {
-    public int statusCode;
-    public String body;
-    public String etag;
-    
-    public Response(int statusCode, String body, String etag) {
-        this.statusCode = statusCode;
-        this.body = body;
-        this.etag = etag;
-    }
+    private int statusCode;
+    private String body;
+    private String etag;
 }
 

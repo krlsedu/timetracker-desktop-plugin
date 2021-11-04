@@ -11,13 +11,13 @@ import java.util.List;
 
 public class SqlLitle {
 	
-	private static final String DB_NAME = ".timeTracker.db";
+	private static final String DB_NAME = ".wakatime-desktop-plugin.db";
 	
 	public static void createNewDatabase(String url) {
 		try {
 			Connection conn = DriverManager.getConnection(url);
 			Statement statement = conn.createStatement();
-			statement.executeQuery("CREATE TABLE error( url text null, json text)").close();
+			statement.executeQuery("CREATE TABLE processs( name text null, json text)").close();
 			conn.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -26,8 +26,7 @@ public class SqlLitle {
 	
 	private static String getUrl() {
 		File file = new File(DB_NAME);
-		Path currentRelativePath = Paths.get("");
-		String relativePath = currentRelativePath.toAbsolutePath().toString();
+		String relativePath = Dependencies.getResourcesLocation();
 		String url = "jdbc:sqlite:" + relativePath + "\\" + DB_NAME;
 		
 		if (!(file.exists() && !file.isDirectory())) {

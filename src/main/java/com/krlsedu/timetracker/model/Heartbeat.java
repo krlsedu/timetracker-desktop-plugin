@@ -1,18 +1,24 @@
 package com.krlsedu.timetracker.model;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.math.BigDecimal;
 
-@Getter
 @Setter
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
+@ToString
+@EqualsAndHashCode
 public class Heartbeat {
-	public String entity;
-	public String entityType;
-	public BigDecimal timestamp;
-	public Boolean isWrite;
-	public String project;
-	public String language;
-	public String category;
+	private String entity;
+	private String entityType;
+	private BigDecimal timestamp;
+	private boolean write;
+	private String project;
+	private String language;
+	private String category;
+	private String ideName;
+	private String ideVersion;
+	private String hostName;
 }

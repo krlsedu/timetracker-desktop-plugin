@@ -9,6 +9,7 @@ import org.apache.log4j.Logger;
 
 import java.io.*;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -17,11 +18,10 @@ import java.util.concurrent.ScheduledExecutorService;
 
 public class WakaTimeCli {
 	public static final Logger log = Logger.getLogger(WakaTimeCli.class);
-	private static final int QUEUE_TIMEOUT_SECONDS = 30;
+	public static final int QUEUE_TIMEOUT_SECONDS = 30;
 	private static final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 	private static final ConcurrentLinkedQueue<Heartbeat> heartbeatsQueue = new ConcurrentLinkedQueue<>();
-	public static boolean debug = false;
-	public static BigDecimal lastTime = new BigDecimal(0);
+	private static boolean debug = true;
 	private static ObjectMapper objectMapper = null;
 	
 	private WakaTimeCli() {
@@ -29,6 +29,7 @@ public class WakaTimeCli {
 	
 	public static void init() {
 		Applications.init();
+		setupDebugging();
 		setupQueueProcessor();
 	}
 	
@@ -36,32 +37,36 @@ public class WakaTimeCli {
 		ArrayList<String> cmds = new ArrayList<>();
 		cmds.add(Dependencies.getCLILocation());
 		cmds.add("--entity");
-		cmds.add(heartbeat.entity);
+		cmds.add(heartbeat.getEntity());
 		cmds.add("--time");
-		cmds.add(heartbeat.timestamp.toPlainString());
+		cmds.add(heartbeat.getTimestamp().toPlainString());
 		cmds.add("--key");
 		cmds.add(ConfigFile.getApiKey());
-		if (heartbeat.project != null) {
+		if (heartbeat.getProject() != null) {
 			cmds.add("--project");
-			cmds.add(heartbeat.project);
+			cmds.add(heartbeat.getProject());
 		}
-		if (heartbeat.language != null) {
+		if (heartbeat.getLanguage() != null) {
 			cmds.add("--alternate-language");
-			cmds.add(heartbeat.language);
+			cmds.add(heartbeat.getLanguage());
 		}
-		if (heartbeat.entityType != null) {
+		if (heartbeat.getEntityType() != null) {
 			cmds.add("--entity-type");
-			cmds.add(heartbeat.entityType);
+			cmds.add(heartbeat.getEntityType());
 		}
-		if (heartbeat.category != null) {
+		if (heartbeat.getCategory() != null) {
 			cmds.add("--category");
-			cmds.add(heartbeat.category);
+			cmds.add(heartbeat.getCategory());
+		}
+		if (heartbeat.getHostName() != null) {
+			cmds.add("--hostname");
+			cmds.add(heartbeat.getHostName());
 		}
 		cmds.add("--plugin");
-		cmds.add("Desktop" + "/" + "11" + " " + "desktop-wakatime/" + "0.1");
-		if (heartbeat.isWrite)
+		cmds.add(heartbeat.getIdeName() + "/" + heartbeat.getIdeVersion() + " " + "desktop-wakatime/" + "0.1");
+		if (heartbeat.isWrite())
 			cmds.add("--write");
-		if (extraHeartbeats.size() > 0)
+		if (!extraHeartbeats.isEmpty())
 			cmds.add("--extra-heartbeats");
 		return cmds.toArray(new String[cmds.size()]);
 	}
@@ -159,26 +164,18 @@ public class WakaTimeCli {
 		sendHeartbeat(heartbeat, extraHeartbeats);
 	}
 	
-	//TODO
 	public static void appendHeartbeat(final ApplicationDetail applicationDetail) {
-		Heartbeat h = new Heartbeat();
-		h.entity = applicationDetail.getActivityDetail();
-		h.entityType = "app";
-		h.timestamp = getCurrentTimestamp(applicationDetail);
-		h.isWrite = false;
-		h.category = "browsing";
-		h.project = applicationDetail.getName();
-		if (isSendHeartbeat(h)) {
-			heartbeatsQueue.add(h);
+		if (isSendHeartbeat(applicationDetail)) {
+			heartbeatsQueue.add(applicationDetail.getHeartbeat());
 		}
 	}
 	
 	public static BigDecimal getCurrentTimestamp(ApplicationDetail applicationDetail) {
-		return new BigDecimal(String.valueOf(applicationDetail.getDateEnd().getTime() / 1000.0)).setScale(4, BigDecimal.ROUND_HALF_UP);
+		return new BigDecimal(String.valueOf(applicationDetail.getDateEnd().getTime() / 1000.0)).setScale(4, RoundingMode.HALF_UP);
 	}
 	
-	public static boolean isSendHeartbeat(Heartbeat heartbeat) {
-		return Applications.sendHeartbeat(heartbeat);
+	public static boolean isSendHeartbeat(ApplicationDetail heartbeat) {
+		return Applications.checkApplicationDetail(heartbeat);
 	}
 	
 	public static ObjectMapper getObjectMapper() {
@@ -187,5 +184,16 @@ public class WakaTimeCli {
 		}
 		return objectMapper;
 	}
+	public static void setupDebugging() {
+		String debug = ConfigFile.get("settings", "debug");
+		WakaTimeCli.debug = debug != null && debug.trim().equals("true");
+	}
 	
+	public static boolean isDebug() {
+		return debug;
+	}
+	
+	public static void setDebug(boolean debug) {
+		WakaTimeCli.debug = debug;
+	}
 }

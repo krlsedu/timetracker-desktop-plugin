@@ -118,11 +118,11 @@ public class Dependencies {
                     return cliVersion;
                 }
                 Pattern p = Pattern.compile(".*\"tag_name\":\\s*\"([^\"]+)\",.*");
-                Matcher m = p.matcher(resp.body);
+                Matcher m = p.matcher(resp.getBody());
                 if (m.find()) {
                     cliVersion = m.group(1);
-                    if (!isStandalone() && resp.etag != null) {
-                        ConfigFile.set("internal", "cli_version_etag", resp.etag);
+                    if (!isStandalone() && resp.getEtag() != null) {
+                        ConfigFile.set("internal", "cli_version_etag", resp.getEtag());
                         ConfigFile.set("internal", "cli_version", cliVersion);
                     }
                     return cliVersion;
@@ -137,7 +137,7 @@ public class Dependencies {
         try {
             Response resp = getUrlAsString(url, null);
             Pattern p = Pattern.compile("([0-9]+\\.[0-9]+\\.[0-9]+)");
-            Matcher m = p.matcher(resp.body);
+            Matcher m = p.matcher(resp.getBody());
             if (m.find()) {
                 cliVersion = m.group(1);
                 return cliVersion;
