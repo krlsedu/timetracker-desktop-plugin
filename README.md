@@ -1,6 +1,6 @@
 # wakatime-desktop-plugin
 
-This is an open source Desktop plugin for metrics, insights, and time tracking automatically generated from your
+This is an open source unofical [wakatime](https://wakatime.com/) Desktop plugin for metrics, insights, and time tracking automatically generated from your
 activity.
 
 Supports Windows (for now, future suports linux systens):
