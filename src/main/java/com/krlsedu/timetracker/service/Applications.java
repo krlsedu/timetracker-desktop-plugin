@@ -24,7 +24,7 @@ public class Applications {
 	public static void init() {
 		try {
 			WakaTimeCli.setupDebugging();
-			var configs = new Scanner(new File(ConfigFile.getConfigAppsFilePath())).useDelimiter("\\Z").next();
+			String configs = new Scanner(new File(ConfigFile.getConfigAppsFilePath())).useDelimiter("\\Z").next();
 			if (!configs.equals(configsCache)) {
 				configsCache = configs;
 				config(configs);
@@ -124,7 +124,7 @@ public class Applications {
 			String ideVersion = getHbpValue(applicationDetail.getProcessName(), "IdeVersion");
 			switch (ideVersion) {
 				case "blank":
-					return "";
+					return applicationDetail.getName();
 				case "none":
 					return applicationDetail.getOsName().replace(" ", "_");
 				default:
@@ -160,7 +160,7 @@ public class Applications {
 		if (applicationDetail.getAppConfig().getProject() == null) {
 			String project = getHbpValue(applicationDetail.getProcessName(), "Project");
 			if ("none".equals(project)) {
-				return applicationDetail.getName();
+				return "Using Desktop";
 			}
 			return project;
 		}

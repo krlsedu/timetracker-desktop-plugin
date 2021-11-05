@@ -1,7 +1,6 @@
 package com.krlsedu.timetracker.service;
 
 import com.krlsedu.timetracker.model.ApplicationDetail;
-
 import com.sun.jna.Native;
 import com.sun.jna.platform.win32.WinDef;
 
@@ -50,7 +49,7 @@ public class ApplicationDetailService {
 	}
 	
 	private static boolean forceAttAppDetails() {
-		var timeSpent = new Date().getTime() - lastTimeDetailChange;
+		long timeSpent = new Date().getTime() - lastTimeDetailChange;
 		return timeSpent > (WakaTimeCli.QUEUE_TIMEOUT_SECONDS * 1000);
 	}
 }

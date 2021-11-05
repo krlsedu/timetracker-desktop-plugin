@@ -69,7 +69,7 @@
                         <configuration>
                             <archive>
                                 <manifest>
-                                    <mainClass>com.krlsedu.timetracker.Monitor</mainClass>
+                                    <mainClass>com.krlsedu.timetracker.WakaTimeDesktopPlugin</mainClass>
                                 </manifest>
                             </archive>
                             <descriptorRefs>

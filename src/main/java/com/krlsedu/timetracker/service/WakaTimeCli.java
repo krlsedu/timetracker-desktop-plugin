@@ -73,12 +73,18 @@ public class WakaTimeCli {
 	
 	private static void sendHeartbeat(final Heartbeat heartbeat, final ArrayList<Heartbeat> extraHeartbeats) {
 		final String[] cmds = buildCliCommand(heartbeat, extraHeartbeats);
-		log.debug("Executing CLI: " + Arrays.toString(obfuscateKey(cmds)));
+		if (WakaTimeCli.debug) {
+			log.debug("Executing CLI: " + Arrays.toString(obfuscateKey(cmds)));
+		}
 		try {
 			Process proc = Runtime.getRuntime().exec(cmds);
 			if (!extraHeartbeats.isEmpty()) {
 				String json = toJSON(extraHeartbeats);
-				log.debug(json);
+				
+				if (WakaTimeCli.debug) {
+					log.debug(json);
+				}
+				
 				try {
 					BufferedWriter stdin = new BufferedWriter(new OutputStreamWriter(proc.getOutputStream()));
 					stdin.write(json);
@@ -184,6 +190,7 @@ public class WakaTimeCli {
 		}
 		return objectMapper;
 	}
+	
 	public static void setupDebugging() {
 		String debug = ConfigFile.get("settings", "debug");
 		WakaTimeCli.debug = debug != null && debug.trim().equals("true");

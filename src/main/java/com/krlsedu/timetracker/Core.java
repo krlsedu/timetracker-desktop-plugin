@@ -8,17 +8,19 @@ import com.sun.jna.platform.win32.WinDef;
 public class Core {
 	
 	private static final int WAIT_TIME = 100;
+	private static boolean ativo = true;
 	
 	private Core() {
 	}
 	
 	public static void start() {
-		WakaTimeCli.init();
 		new Thread(Core::tracker).start();
 	}
 	
 	private static void tracker() {
-		
+		if (WakaTimeCli.isDebug()) {
+			WakaTimeCli.log.info("Initiated");
+		}
 		do {
 			try {
 				Thread.sleep(WAIT_TIME);
@@ -28,12 +30,22 @@ public class Core {
 				if (foregroundWindow != null) {
 					ApplicationDetailService.generateApplicationDetailInfo(foregroundWindow);
 				}
-				
 			} catch (Exception e) {
 				Thread.currentThread().interrupt();
+				WakaTimeCli.log.error(e);
 				break;
 			}
-		} while (true);
-		
+		} while (isAtivo());
+		if (WakaTimeCli.isDebug()) {
+			WakaTimeCli.log.info("Stooped");
+		}
+	}
+	
+	public static boolean isAtivo() {
+		return ativo;
+	}
+	
+	public static void setAtivo(boolean ativo) {
+		Core.ativo = ativo;
 	}
 }
