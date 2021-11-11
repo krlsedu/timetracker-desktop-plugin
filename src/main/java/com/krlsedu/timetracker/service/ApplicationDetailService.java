@@ -52,4 +52,8 @@ public class ApplicationDetailService {
 		long timeSpent = new Date().getTime() - lastTimeDetailChange;
 		return timeSpent > (WakaTimeCli.QUEUE_TIMEOUT_SECONDS * 1000);
 	}
+	
+	public static void clearAplicationDetail() {
+		aplicationDetail = null;
+	}
 }

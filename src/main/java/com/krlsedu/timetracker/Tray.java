@@ -10,6 +10,9 @@ import java.awt.*;
  * @author Carlos Eduardo Duarte Schwalm
  */
 public class Tray {
+	private static MenuItem togleExecution;
+	private static TrayIcon icon;
+	
 	private Tray() {
 	}
 	
@@ -23,7 +26,7 @@ public class Tray {
 		
 		ImageIcon offIcon = new ImageIcon(ClassLoader.getSystemResource("icon.png"));
 		PopupMenu popup = new PopupMenu();
-		TrayIcon icon = new TrayIcon(offIcon.getImage(), "WakaTime-desktop-plugin", popup);
+		icon = new TrayIcon(offIcon.getImage(), "WakaTime-desktop-plugin", popup);
 		icon.setImageAutoSize(true);
 		try {
 			tray.add(icon);
@@ -38,14 +41,26 @@ public class Tray {
 			System.exit(0);
 		});
 		
-		MenuItem togleExecution = new MenuItem(Core.isAtivo() ? "Stop - monitoring" : "Start - monitoring");
+		togleExecution = new MenuItem(Core.isAtivo() ? "Stop - monitoring" : "Start - monitoring");
 		togleExecution.addActionListener(e -> {
-			Core.setAtivo(!Core.isAtivo());
-			togleExecution.setLabel(Core.isAtivo() ? "Stop - monitoring" : "Start - monitoring");
+			Core.alternStatus();
+			togleLabel();
 		});
 		
 		popup.add(togleExecution);
 		popup.add(exit);
+	}
+	
+	public static void togleLabel() {
+		togleExecution.setLabel(Core.isAtivo() ? "Stop - monitoring" : "Start - monitoring");
+	}
+	
+	public static void notifyInfo(String msg) {
+		icon.displayMessage("Wakatime desktop plugin", msg, TrayIcon.MessageType.INFO);
+	}
+	
+	public static void notifyError(String msg) {
+		icon.displayMessage("Wakatime desktop plugin", msg, TrayIcon.MessageType.ERROR);
 	}
 }
 

@@ -1,5 +1,7 @@
 package com.krlsedu.timetracker.service;
 
+import com.krlsedu.timetracker.Core;
+
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
@@ -27,7 +29,7 @@ public class SystemInfo {
 				addr = InetAddress.getLocalHost();
 				hostName = addr.getHostName();
 			} catch (UnknownHostException ex) {
-				WakaTimeCli.log.error("Hostname can not be resolved");
+				Core.error(ex);
 			}
 		}
 		return hostName;

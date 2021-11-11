@@ -15,6 +15,7 @@ import java.util.Arrays;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
 
 public class WakaTimeCli {
 	public static final Logger log = Logger.getLogger(WakaTimeCli.class);
@@ -23,6 +24,7 @@ public class WakaTimeCli {
 	private static final ConcurrentLinkedQueue<Heartbeat> heartbeatsQueue = new ConcurrentLinkedQueue<>();
 	private static boolean debug = true;
 	private static ObjectMapper objectMapper = null;
+	private static ScheduledFuture<?> scheduledFixture;
 	
 	private WakaTimeCli() {
 	}
@@ -148,7 +150,11 @@ public class WakaTimeCli {
 	private static void setupQueueProcessor() {
 		final Runnable handler = WakaTimeCli::processHeartbeatQueue;
 		long delay = QUEUE_TIMEOUT_SECONDS;
-		scheduler.scheduleAtFixedRate(handler, delay, delay, java.util.concurrent.TimeUnit.SECONDS);
+		scheduledFixture = scheduler.scheduleAtFixedRate(handler, delay, delay, java.util.concurrent.TimeUnit.SECONDS);
+	}
+	
+	public static void stopQueue() {
+		scheduledFixture.cancel(true);
 	}
 	
 	private static void processHeartbeatQueue() {

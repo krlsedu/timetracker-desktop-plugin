@@ -30,7 +30,15 @@ public class Applications {
 				config(configs);
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			if (configsCache != null) {
+				try {
+					config(configsCache);
+				} catch (JsonProcessingException ex) {
+					ex.printStackTrace();
+				}
+			} else {
+				e.printStackTrace();
+			}
 		}
 		
 		if (defaultConfigApp == null) {
@@ -192,7 +200,11 @@ public class Applications {
 	public static void setProcessName(ApplicationDetail applicationDetail) {
 		String name = applicationDetail.getName();
 		name = name.substring(name.lastIndexOf("\\") + 1);
-		applicationDetail.setProcessName(name.substring(0, name.lastIndexOf(".")));
+		try {
+			applicationDetail.setProcessName(name.substring(0, name.lastIndexOf(".")));
+		} catch (Exception e) {
+			//ignored
+		}
 	}
 	
 	public static void setName(ApplicationDetail applicationDetail) {
