@@ -24,7 +24,8 @@ public class Heartbeat {
 	private String ideName;
 	private String ideVersion;
 	private String hostName;
-	private Long timeSpentMillis;
+    private String osName;
+    private Long timeSpentMillis;
 	private boolean sent;
 	private Date dateTime;
 }

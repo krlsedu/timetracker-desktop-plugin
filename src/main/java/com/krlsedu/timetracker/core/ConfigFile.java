@@ -1,10 +1,4 @@
-/* ==========================================================
-File:        ConfigFile.java
-Description: Read and write settings from the INI config file.
-Maintainer:  WakaTime <support@wakatime.com>
-License:     BSD, see LICENSE for more details.
-Website:     https://wakatime.com/
-===========================================================*/
+
 
 package com.krlsedu.timetracker.core;
 
@@ -12,14 +6,11 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 
 public class ConfigFile {
-    private static final String WAKATIME_CFG = ".wakatime.cfg";
     private static final String TIMETRACKER_CFG = ".timeTracker.cfg";
     private static final String WAKATIME_APPS_MONITORIN_JSON = ".timeTracker-desktop-plugin-config.json";
     private static String resourcesLocation = null;
-    private static String wakaTimeCachedConfigFile = null;
     private static String timeTrackerCachedConfigFile = null;
     private static String cachedConfigFileConfigApps = null;
-    private static String apiKey = "";
 
     private ConfigFile() {
     }
@@ -32,11 +23,10 @@ public class ConfigFile {
         return ConfigFile.timeTrackerCachedConfigFile;
     }
 
-
     public static String getResourcesLocation() {
         if (resourcesLocation != null) return resourcesLocation;
 
-        if (Dependencies.isWindows()) {
+        if (ConfigFile.isWindows()) {
             File windowsHome = new File(System.getenv("USERPROFILE"));
             File resourcesFolder = new File(windowsHome, ".timeTracker");
             resourcesLocation = resourcesFolder.getAbsolutePath();
@@ -47,14 +37,6 @@ public class ConfigFile {
         File resourcesFolder = new File(userHomeDir, ".timeTracker");
         resourcesLocation = resourcesFolder.getAbsolutePath();
         return resourcesLocation;
-    }
-
-    public static String getConfigFilePathWakaTime() {
-        ConfigFile.wakaTimeCachedConfigFile = new File(System.getProperty("user.home"), ConfigFile.WAKATIME_CFG).getAbsolutePath();
-        if (TimeTrackerCore.isDebug()) {
-            TimeTrackerCore.log.debug("Using $HOME for config folder: " + ConfigFile.wakaTimeCachedConfigFile);
-        }
-        return ConfigFile.wakaTimeCachedConfigFile;
     }
 
     public static String getConfigAppsFilePath() {
@@ -175,16 +157,16 @@ public class ConfigFile {
         }
     }
 
-    public static String getApiKey() {
-        if (!ConfigFile.apiKey.equals("")) {
-            return ConfigFile.apiKey;
-        }
-
-        String apiKey = get("settings", "api_key", ConfigFile.getConfigFilePathWakaTime());
-        if (apiKey == null) apiKey = "";
-
-        ConfigFile.apiKey = apiKey;
-        return apiKey;
+    public static boolean isTimeTrackerOffline() {
+        String setting = ConfigFile.get("settings", "timeTrackerOffline");
+        return !(setting == null || setting.equals("false"));
     }
 
+    public static String urlTimeTracker() {
+        return ConfigFile.get("settings", "urlTimeTracker");
+    }
+
+    public static boolean isWindows() {
+        return System.getProperty("os.name").contains("Windows");
+    }
 }

@@ -1,6 +1,6 @@
-package com.krlsedu.timetracker.model;
+package com.krlsedu.timetracker.core.model;
 
-import com.krlsedu.timetracker.core.model.Heartbeat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import java.util.Date;
@@ -21,7 +21,13 @@ public class ApplicationDetail {
 	private Date dateEnd;
 	private String osName;
 	private String hostName;
+
+	@JsonIgnore
 	private ConfigApp appConfig;
+
+	@JsonIgnore
 	private boolean sendHeartbeat;
+
+	@JsonIgnore
 	private Heartbeat heartbeat;
 }

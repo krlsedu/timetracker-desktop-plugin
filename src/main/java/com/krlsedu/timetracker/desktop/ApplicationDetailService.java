@@ -1,7 +1,7 @@
 package com.krlsedu.timetracker.desktop;
 
 import com.krlsedu.timetracker.core.TimeTrackerCore;
-import com.krlsedu.timetracker.model.ApplicationDetail;
+import com.krlsedu.timetracker.core.model.ApplicationDetail;
 import com.sun.jna.Native;
 import com.sun.jna.platform.win32.WinDef;
 

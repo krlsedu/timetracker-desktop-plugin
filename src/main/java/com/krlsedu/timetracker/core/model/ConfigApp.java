@@ -1,4 +1,4 @@
-package com.krlsedu.timetracker.model;
+package com.krlsedu.timetracker.core.model;
 
 import lombok.*;
 
