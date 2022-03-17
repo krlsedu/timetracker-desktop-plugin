@@ -1,7 +1,7 @@
-package com.krlsedu.timetracker;
+package com.krlsedu.timetracker.desktop;
 
 
-import com.krlsedu.timetracker.service.LoggerConf;
+import com.krlsedu.timetracker.core.LoggerConf;
 
 public class WakaTimeDesktopPlugin {
 	

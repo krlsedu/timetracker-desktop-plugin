@@ -1,6 +1,6 @@
-package com.krlsedu.timetracker.service;
+package com.krlsedu.timetracker.desktop;
 
-import com.krlsedu.timetracker.Core;
+import com.krlsedu.timetracker.core.TimeTrackerCore;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -47,7 +47,7 @@ public class SystemInfo {
 		
 		if (newState != state) {
 			state = newState;
-			WakaTimeCli.log.info(state);
+			TimeTrackerCore.log.info(state);
 			return true;
 		}
 		

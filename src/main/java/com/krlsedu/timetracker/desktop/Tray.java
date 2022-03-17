@@ -1,7 +1,7 @@
 
-package com.krlsedu.timetracker;
+package com.krlsedu.timetracker.desktop;
 
-import com.krlsedu.timetracker.service.WakaTimeCli;
+import com.krlsedu.timetracker.core.TimeTrackerCore;
 
 import javax.swing.*;
 import java.awt.*;
@@ -31,7 +31,7 @@ public class Tray {
 		try {
 			tray.add(icon);
 		} catch (AWTException e) {
-			WakaTimeCli.log.error(e);
+			TimeTrackerCore.log.error(e);
 			return;
 		}
 		

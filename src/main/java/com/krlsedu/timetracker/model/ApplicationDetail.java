@@ -1,5 +1,6 @@
 package com.krlsedu.timetracker.model;
 
+import com.krlsedu.timetracker.core.model.Heartbeat;
 import lombok.*;
 
 import java.util.Date;
@@ -12,7 +13,8 @@ import java.util.Date;
 @EqualsAndHashCode
 public class ApplicationDetail {
 	private String name;
-	private String processName;
+	private String process;
+	private String completeProcessName;
 	private String activityDetail;
 	private Long timeSpentMillis;
 	private Date dateIni;

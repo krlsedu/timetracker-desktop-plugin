@@ -1,4 +1,4 @@
-package com.krlsedu.timetracker.service;
+package com.krlsedu.timetracker.desktop;
 
 import com.sun.jna.Native;
 import com.sun.jna.Structure;
@@ -15,41 +15,24 @@ import java.util.List;
 public class Win32IdleTime {
 	public interface Kernel32 extends StdCallLibrary {
 		Kernel32 INSTANCE = Native.loadLibrary("kernel32", Kernel32.class);
-		
-		/**
-		 * Retrieves the number of milliseconds that have elapsed since the system was started.
-		 *
-		 * @return number of milliseconds that have elapsed since the system was started.
-		 * @see http://msdn2.microsoft.com/en-us/library/ms724408.aspx
-		 */
+
 		int GetTickCount();
 	}
-	
+
 	public interface User32 extends StdCallLibrary {
 		User32 INSTANCE = Native.loadLibrary("user32", User32.class);
-		
-		/**
-		 * Retrieves the time of the last input event.
-		 *
-		 * @return time of the last input event, in milliseconds
-		 * @see http://msdn.microsoft.com/library/default.asp?url=/library/en-us/winui/winui/windowsuserinterface/userinput/keyboardinput/keyboardinputreference/keyboardinputfunctions/getlastinputinfo.asp
-		 */
-		boolean GetLastInputInfo(LASTINPUTINFO result);
-		
-		/**
-		 * Contains the time of the last input.
-		 *
-		 * @see http://msdn.microsoft.com/library/default.asp?url=/library/en-us/winui/winui/windowsuserinterface/userinput/keyboardinput/keyboardinputreference/keyboardinputstructures/lastinputinfo.asp
-		 */
+
+		void GetLastInputInfo(LASTINPUTINFO result);
+
+
 		class LASTINPUTINFO extends Structure {
 			public int cbSize = 8;
-			
+
 			/// Tick count of when the last input event was received.
 			public int dwTime;
-			
-			@SuppressWarnings("rawtypes")
+
 			@Override
-			protected List getFieldOrder() {
+			protected List<String> getFieldOrder() {
 				return Arrays.asList("cbSize", "dwTime");
 			}
 		}

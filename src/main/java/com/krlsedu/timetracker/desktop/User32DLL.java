@@ -1,4 +1,4 @@
-package com.krlsedu.timetracker.service;
+package com.krlsedu.timetracker.desktop;
 
 import com.sun.jna.Native;
 import com.sun.jna.platform.win32.Kernel32;

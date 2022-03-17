@@ -1,5 +1,6 @@
-package com.krlsedu.timetracker.service;
+package com.krlsedu.timetracker.desktop;
 
+import com.krlsedu.timetracker.core.TimeTrackerCore;
 import com.krlsedu.timetracker.model.ApplicationDetail;
 import com.sun.jna.Native;
 import com.sun.jna.platform.win32.WinDef;
@@ -30,9 +31,9 @@ public class ApplicationDetailService {
 				aplicationDetail.setTimeSpentMillis(aplicationDetail.getDateEnd().getTime() - aplicationDetail.getDateIni().getTime());
 				aplicationDetail.setOsName(SystemInfo.getOsName());
 				aplicationDetail.setHostName(SystemInfo.getHostName());
-				WakaTimeCli.appendHeartbeat(aplicationDetail);
-				if (WakaTimeCli.isDebug()) {
-					WakaTimeCli.log.info(aplicationDetail);
+				TimeTrackerCore.appendHeartbeat(aplicationDetail);
+				if (TimeTrackerCore.isDebug()) {
+					TimeTrackerCore.log.info(aplicationDetail);
 				}
 			}
 			if (systemStat.isOnline()) {
@@ -50,7 +51,7 @@ public class ApplicationDetailService {
 	
 	private static boolean forceAttAppDetails() {
 		long timeSpent = new Date().getTime() - lastTimeDetailChange;
-		return timeSpent > (WakaTimeCli.QUEUE_TIMEOUT_SECONDS * 1000);
+		return timeSpent > (TimeTrackerCore.QUEUE_TIMEOUT_SECONDS * 1000);
 	}
 	
 	public static void clearAplicationDetail() {

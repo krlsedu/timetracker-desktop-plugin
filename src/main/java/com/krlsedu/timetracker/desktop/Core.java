@@ -1,7 +1,6 @@
-package com.krlsedu.timetracker;
+package com.krlsedu.timetracker.desktop;
 
-import com.krlsedu.timetracker.service.ApplicationDetailService;
-import com.krlsedu.timetracker.service.WakaTimeCli;
+import com.krlsedu.timetracker.core.TimeTrackerCore;
 import com.sun.jna.platform.win32.User32;
 import com.sun.jna.platform.win32.WinDef;
 
@@ -15,7 +14,7 @@ public class Core {
 	
 	public static void start() {
 		ativate();
-		WakaTimeCli.init();
+		TimeTrackerCore.init();
 		new Thread(Core::tracker).start();
 		Tray.togleLabel();
 		if (isAtivo()) {
@@ -24,15 +23,15 @@ public class Core {
 	}
 	
 	private static void tracker() {
-		if (WakaTimeCli.isDebug()) {
-			WakaTimeCli.log.info("Initiated");
+		if (TimeTrackerCore.isDebug()) {
+			TimeTrackerCore.log.info("Initiated");
 		}
 		do {
 			try {
 				Thread.sleep(WAIT_TIME);
-				
+
 				WinDef.HWND foregroundWindow = User32.INSTANCE.GetForegroundWindow();
-				
+
 				if (foregroundWindow != null) {
 					ApplicationDetailService.generateApplicationDetailInfo(foregroundWindow);
 				}
@@ -42,16 +41,16 @@ public class Core {
 				break;
 			}
 		} while (isAtivo());
-		if (WakaTimeCli.isDebug() && !isAtivo()) {
-			WakaTimeCli.log.info("Stooped");
+		if (TimeTrackerCore.isDebug() && !isAtivo()) {
+			TimeTrackerCore.log.info("Stooped");
 		}
 	}
 	
 	public static void error(Exception e) {
-		WakaTimeCli.log.error(e);
-		WakaTimeCli.log.error(e.fillInStackTrace());
-		WakaTimeCli.log.error(e.getLocalizedMessage());
-		WakaTimeCli.log.error(e.getMessage());
+		TimeTrackerCore.log.error(e);
+		TimeTrackerCore.log.error(e.fillInStackTrace());
+		TimeTrackerCore.log.error(e.getLocalizedMessage());
+		TimeTrackerCore.log.error(e.getMessage());
 		Tray.notifyError("There was an error in processing!\n" +
 				"The plugin will restart.");
 		restart();
@@ -80,7 +79,7 @@ public class Core {
 	public static void stop() {
 		desativate();
 		ApplicationDetailService.clearAplicationDetail();
-		WakaTimeCli.stopQueue();
+		TimeTrackerCore.stopQueue();
 		Tray.togleLabel();
 	}
 	
