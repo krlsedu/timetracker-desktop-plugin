@@ -6,11 +6,9 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 
 public class ConfigFile {
-    private static final String TIMETRACKER_CFG = ".timeTracker.cfg";
-    private static final String WAKATIME_APPS_MONITORIN_JSON = ".timeTracker-desktop-plugin-config.json";
+    private static final String TIMETRACKER_CFG = "timeTracker.cfg";
     private static String resourcesLocation = null;
     private static String timeTrackerCachedConfigFile = null;
-    private static String cachedConfigFileConfigApps = null;
 
     private ConfigFile() {
     }
@@ -37,14 +35,6 @@ public class ConfigFile {
         File resourcesFolder = new File(userHomeDir, ".timeTracker");
         resourcesLocation = resourcesFolder.getAbsolutePath();
         return resourcesLocation;
-    }
-
-    public static String getConfigAppsFilePath() {
-        ConfigFile.cachedConfigFileConfigApps = new File(getResourcesLocation(), ConfigFile.WAKATIME_APPS_MONITORIN_JSON).getAbsolutePath();
-        if (TimeTrackerCore.isDebug()) {
-            TimeTrackerCore.log.debug("Using $HOME for config folder: " + ConfigFile.cachedConfigFileConfigApps);
-        }
-        return ConfigFile.cachedConfigFileConfigApps;
     }
 
 

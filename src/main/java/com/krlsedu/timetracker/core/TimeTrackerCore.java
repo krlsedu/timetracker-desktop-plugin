@@ -34,7 +34,6 @@ public class TimeTrackerCore {
     }
 
     public static void init() {
-        Applications.init();
         setupDebugging();
         setupQueueProcessor();
     }
@@ -126,7 +125,6 @@ public class TimeTrackerCore {
     }
 
     public static void appendHeartbeat(final ApplicationDetail applicationDetail) {
-        Applications.checkApplicationDetail(applicationDetail);
         heartbeatsQueue.add(applicationDetail);
     }
 
