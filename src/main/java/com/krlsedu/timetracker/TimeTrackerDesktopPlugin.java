@@ -5,8 +5,8 @@ import com.krlsedu.timetracker.core.LoggerConf;
 import com.krlsedu.timetracker.desktop.Core;
 import com.krlsedu.timetracker.desktop.Tray;
 
-public class WakaTimeDesktopPlugin {
-	
+public class TimeTrackerDesktopPlugin {
+
 	public static void main(String[] args) {
 		LoggerConf.config();
 		Tray.config();

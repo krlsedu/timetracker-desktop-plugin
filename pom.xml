@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.example</groupId>
-    <artifactId>Wakatime-desktop-plugin</artifactId>
+    <artifactId>timeTracker-desktop-plugin</artifactId>
     <version>1.0-SNAPSHOT</version>
 
     <dependencies>
@@ -61,7 +61,7 @@
 
     </dependencies>
     <build>
-        <finalName>Wakatime-desktop-plugin</finalName>
+        <finalName>timeTracker-desktop-plugin</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -84,7 +84,7 @@
                         <configuration>
                             <archive>
                                 <manifest>
-                                    <mainClass>com.krlsedu.timetracker.WakaTimeDesktopPlugin</mainClass>
+                                    <mainClass>com.krlsedu.timetracker.TimeTrackerDesktopPlugin</mainClass>
                                 </manifest>
                             </archive>
                             <descriptorRefs>

@@ -18,4 +18,5 @@ public class ApplicationDetail {
 	private Date dateEnd;
 	private String osName;
 	private String hostName;
+	private String pluginName;
 }

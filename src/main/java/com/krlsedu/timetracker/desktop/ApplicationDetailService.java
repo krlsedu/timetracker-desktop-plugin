@@ -38,6 +38,7 @@ public class ApplicationDetailService {
 			}
 			if (systemStat.isOnline()) {
 				aplicationDetail = new ApplicationDetail();
+				aplicationDetail.setPluginName("desktop");
 				aplicationDetail.setName(User32DLL.getImageName(foregroundWindow));
 				aplicationDetail.setActivityDetail(foregroundDeteail);
 				aplicationDetail.setDateIni(new Date());

@@ -26,7 +26,7 @@ public class Tray {
 		
 		ImageIcon offIcon = new ImageIcon(ClassLoader.getSystemResource("icon.png"));
 		PopupMenu popup = new PopupMenu();
-		icon = new TrayIcon(offIcon.getImage(), "WakaTime-desktop-plugin", popup);
+		icon = new TrayIcon(offIcon.getImage(), "TimeTracker-desktop-plugin", popup);
 		icon.setImageAutoSize(true);
 		try {
 			tray.add(icon);
@@ -56,11 +56,11 @@ public class Tray {
 	}
 	
 	public static void notifyInfo(String msg) {
-		icon.displayMessage("Wakatime desktop plugin", msg, TrayIcon.MessageType.INFO);
+		icon.displayMessage("TimeTracker desktop plugin", msg, TrayIcon.MessageType.INFO);
 	}
 	
 	public static void notifyError(String msg) {
-		icon.displayMessage("Wakatime desktop plugin", msg, TrayIcon.MessageType.ERROR);
+		icon.displayMessage("TimeTracker desktop plugin", msg, TrayIcon.MessageType.ERROR);
 	}
 }
 
