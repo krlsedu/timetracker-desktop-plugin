@@ -14,7 +14,7 @@ import java.nio.charset.StandardCharsets;
 public class ConfigFile {
     private static final String WAKATIME_CFG = ".wakatime.cfg";
     private static final String TIMETRACKER_CFG = ".timeTracker.cfg";
-    private static final String WAKATIME_APPS_MONITORIN_JSON = ".wakatime-desktop-plugin-config.json";
+    private static final String WAKATIME_APPS_MONITORIN_JSON = ".timeTracker-desktop-plugin-config.json";
     private static String resourcesLocation = null;
     private static String wakaTimeCachedConfigFile = null;
     private static String timeTrackerCachedConfigFile = null;
@@ -58,7 +58,7 @@ public class ConfigFile {
     }
 
     public static String getConfigAppsFilePath() {
-        ConfigFile.cachedConfigFileConfigApps = new File(System.getProperty("user.home"), ConfigFile.WAKATIME_APPS_MONITORIN_JSON).getAbsolutePath();
+        ConfigFile.cachedConfigFileConfigApps = new File(getResourcesLocation(), ConfigFile.WAKATIME_APPS_MONITORIN_JSON).getAbsolutePath();
         if (TimeTrackerCore.isDebug()) {
             TimeTrackerCore.log.debug("Using $HOME for config folder: " + ConfigFile.cachedConfigFileConfigApps);
         }
