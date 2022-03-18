@@ -1,6 +1,7 @@
 
 package com.krlsedu.timetracker.desktop;
 
+import com.krlsedu.timetracker.core.SqlLitle;
 import com.krlsedu.timetracker.core.TimeTrackerCore;
 
 import javax.swing.*;
@@ -34,20 +35,30 @@ public class Tray {
 			TimeTrackerCore.log.error(e);
 			return;
 		}
-		
+
 		MenuItem exit = new MenuItem("Exit");
 		exit.addActionListener(e -> {
 			tray.remove(icon);
 			System.exit(0);
 		});
-		
+
+		MenuItem syncBkp = new MenuItem("Sync bkps");
+		syncBkp.addActionListener(e -> {
+			try {
+				SqlLitle.syncBkps();
+			} catch (Exception ex) {
+				System.out.println(ex.getMessage());
+			}
+		});
+
 		togleExecution = new MenuItem(Core.isAtivo() ? "Stop - monitoring" : "Start - monitoring");
 		togleExecution.addActionListener(e -> {
 			Core.alternStatus();
 			togleLabel();
 		});
-		
+
 		popup.add(togleExecution);
+		popup.add(syncBkp);
 		popup.add(exit);
 	}
 	

@@ -52,19 +52,20 @@ public class TimeTrackerCore {
     }
 
     private static void resincErrors() {
-
-        try {
-            SqlLitle.getErrors(resincErrors);
-        } catch (SQLException e) {
-            log.warn(e);
-        }
-
-        while (true) {
-            String jsonString = resincErrors.poll();
-            if (jsonString == null) {
-                return;
+        if (!ConfigFile.isTimeTrackerOffline()) {
+            try {
+                SqlLitle.getErrors(resincErrors);
+            } catch (SQLException e) {
+                log.warn(e);
             }
-            send(jsonString);
+
+            while (true) {
+                String jsonString = resincErrors.poll();
+                if (jsonString == null) {
+                    return;
+                }
+                send(jsonString);
+            }
         }
     }
 
