@@ -86,7 +86,7 @@ public class TimeTrackerCore {
     public static void send(List<ApplicationDetail> heartbeats) {
         String jsonString = null;
         try {
-            if (heartbeats != null && heartbeats.isEmpty()) {
+            if (heartbeats != null && !heartbeats.isEmpty()) {
                 jsonString = getObjectMapper().writeValueAsString(heartbeats);
                 send(jsonString);
             }
