@@ -5,7 +5,6 @@ import com.krlsedu.timetracker.core.model.ApplicationDetail;
 import com.sun.jna.Native;
 import com.sun.jna.platform.win32.WinDef;
 
-import java.io.IOException;
 import java.util.Date;
 
 public class ApplicationDetailService {
@@ -43,7 +42,8 @@ public class ApplicationDetailService {
 				aplicationDetail.setProcessName(User32DLL.getImageName(foregroundWindow));
 				try {
 					FileVersion.appDetails(aplicationDetail);
-				} catch (IOException e) {
+					aplicationDetail.setName(aplicationDetail.getName().replaceAll("s/\\x00//g", "").replaceAll("\u0000", ""));
+				} catch (Exception e) {
 					//
 				}
 				aplicationDetail.setActivityDetail(foregroundDeteail);

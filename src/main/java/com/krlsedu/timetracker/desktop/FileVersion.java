@@ -9,13 +9,12 @@ import com.sun.jna.platform.win32.Version;
 import com.sun.jna.ptr.IntByReference;
 import com.sun.jna.ptr.PointerByReference;
 
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
 public class FileVersion {
-    public static void appDetails(ApplicationDetail applicationDetail) throws IOException {
+    public static void appDetails(ApplicationDetail applicationDetail) throws Exception {
         // http://msdn.microsoft.com/en-us/library/ms647464%28v=vs.85%29.aspx
         //
         // VerQueryValue will take two input and two output parameters
@@ -147,7 +146,11 @@ public class FileVersion {
                 subBlock.append(codePage);
                 subBlock.append("\\FileDescription");
 
-                applicationDetail.setName(printDescription(lpData, subBlock.toString()));
+                try {
+                    applicationDetail.setName(printDescription(lpData, subBlock.toString()));
+                } catch (Exception e) {
+                    applicationDetail.setName("");
+                }
                 applicationDetail.setAppVersion(version);
             }
         } else
