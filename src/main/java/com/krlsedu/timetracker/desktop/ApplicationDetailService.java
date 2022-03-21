@@ -5,6 +5,7 @@ import com.krlsedu.timetracker.core.model.ApplicationDetail;
 import com.sun.jna.Native;
 import com.sun.jna.platform.win32.WinDef;
 
+import java.io.IOException;
 import java.util.Date;
 
 public class ApplicationDetailService {
@@ -39,7 +40,12 @@ public class ApplicationDetailService {
 			if (systemStat.isOnline()) {
 				aplicationDetail = new ApplicationDetail();
 				aplicationDetail.setPluginName("desktop");
-				aplicationDetail.setName(User32DLL.getImageName(foregroundWindow));
+				aplicationDetail.setProcessName(User32DLL.getImageName(foregroundWindow));
+				try {
+					FileVersion.appDetails(aplicationDetail);
+				} catch (IOException e) {
+					//
+				}
 				aplicationDetail.setActivityDetail(foregroundDeteail);
 				aplicationDetail.setDateIni(new Date());
 				lastTimeDetailChange = new Date().getTime();

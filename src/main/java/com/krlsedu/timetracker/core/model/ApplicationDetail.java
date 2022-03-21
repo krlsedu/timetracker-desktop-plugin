@@ -19,4 +19,6 @@ public class ApplicationDetail {
 	private String osName;
 	private String hostName;
 	private String pluginName;
+	private String processName;
+	private String appVersion;
 }
