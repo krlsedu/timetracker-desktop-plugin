@@ -16,7 +16,7 @@ public class SqlLitle {
     public static void createNewDatabase(String url) throws SQLException {
         Connection conn = DriverManager.getConnection(url);
         Statement statement = conn.createStatement();
-        statement.executeQuery("CREATE TABLE error( json text)").close();
+        statement.execute("CREATE TABLE error( json text)");
         conn.close();
     }
 
