@@ -2,7 +2,9 @@ package com.krlsedu.timetracker.core;
 
 import java.io.File;
 import java.sql.*;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -30,8 +32,30 @@ public class SqlLitle {
         return url;
     }
 
+    private static String getUrlBkp() throws SQLException {
+        String relativePath = ConfigFile.getResourcesLocation();
+        String fileName = relativePath + "\\bkps\\.timetracker-desktop-plugin" + new SimpleDateFormat("-yyMMdd-hhmmss").format(new Date()) + ".db";
+        File file = new File(fileName);
+        String url = "jdbc:sqlite:" + fileName;
+
+        if (!(file.exists() && !file.isDirectory())) {
+            createNewDatabase(url);
+        }
+
+        return url;
+    }
+
     public static void salva(String json) throws Exception {
         String url = getUrl();
+        Connection conn = DriverManager.getConnection(url);
+        PreparedStatement preparedStatement = conn.prepareStatement("insert into error (json) values (?)");
+        preparedStatement.setString(1, json);
+        preparedStatement.execute();
+        conn.close();
+    }
+
+    public static void salvaBkp(String json) throws Exception {
+        String url = getUrlBkp();
         Connection conn = DriverManager.getConnection(url);
         PreparedStatement preparedStatement = conn.prepareStatement("insert into error (json) values (?)");
         preparedStatement.setString(1, json);
@@ -50,6 +74,15 @@ public class SqlLitle {
             }
         }
         removeBkps();
+    }
+
+    public static void generateBackup() throws Exception {
+        var url = getUrlBkp();
+        var errors = getErrors(url);
+        for (String erro :
+                errors) {
+            salvaBkp(erro);
+        }
     }
 
     private static void removeBkps() throws Exception {
@@ -103,6 +136,8 @@ public class SqlLitle {
         while (resultSet.next()) {
             errors.add(resultSet.getString(1));
         }
+        preparedStatement = conn.prepareStatement("delete from error");
+        preparedStatement.execute();
         conn.close();
         return errors;
     }

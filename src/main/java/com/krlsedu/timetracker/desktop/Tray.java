@@ -51,6 +51,15 @@ public class Tray {
 			}
 		});
 
+		MenuItem backupDb = new MenuItem("Backup errors");
+		backupDb.addActionListener(e -> {
+			try {
+				SqlLitle.generateBackup();
+			} catch (Exception ex) {
+				System.out.println(ex.getMessage());
+			}
+		});
+
 		togleExecution = new MenuItem(Core.isAtivo() ? "Stop - monitoring" : "Start - monitoring");
 		togleExecution.addActionListener(e -> {
 			Core.alternStatus();
@@ -58,6 +67,7 @@ public class Tray {
 		});
 
 		popup.add(togleExecution);
+		popup.add(backupDb);
 		popup.add(syncBkp);
 		popup.add(exit);
 	}
