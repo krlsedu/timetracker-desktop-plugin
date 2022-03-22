@@ -54,8 +54,7 @@ public class SqlLitle {
         conn.close();
     }
 
-    public static void salvaBkp(String json) throws Exception {
-        String url = getUrlBkp();
+    public static void salvaBkp(String json, String url) throws Exception {
         Connection conn = DriverManager.getConnection(url);
         PreparedStatement preparedStatement = conn.prepareStatement("insert into error (json) values (?)");
         preparedStatement.setString(1, json);
@@ -77,11 +76,12 @@ public class SqlLitle {
     }
 
     public static void generateBackup() throws Exception {
-        var url = getUrlBkp();
+        var url = getUrl();
+        var urlBkp = getUrlBkp();
         var errors = getErrors(url);
         for (String erro :
                 errors) {
-            salvaBkp(erro);
+            salvaBkp(erro, urlBkp);
         }
     }
 
@@ -92,7 +92,7 @@ public class SqlLitle {
         File[] folderFiles = folder.listFiles();
         for (File file :
                 folderFiles) {
-            if (!new File(relativePath + "\\" + BKPS + file.getName()).delete()) {
+            if (!file.delete()) {
                 throw new Exception("Não foi possivel excluir! " + relativePath + "\\" + BKPS + file);
             }
         }
