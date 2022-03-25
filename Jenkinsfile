@@ -4,6 +4,11 @@ pipeline {
   agent none
   stages {
     stage('Build') {
+
+      agent any
+        tools {
+                maven 'M3'
+            }
           steps {
             script {
                 if (env.BRANCH_NAME == 'master') {
@@ -15,7 +20,7 @@ pipeline {
                 }
             }
             echo "${TAG}"
-            sh 'mvn versions:set versions:commit -DnewVersion=0.0.1'
+            sh 'mvn versions:set versions:commit -DnewVersion=$TAG'
             echo "2"
             sh 'mvn clean install'
             echo "3"
