@@ -9,7 +9,7 @@ pipeline {
   stages {
     stage('Build') {
       steps {
-        MY_VERSION = VersionNumber(versionNumberString: '${BUILD_DATE_FORMATTED, "yyyyMMdd"}.${BUILDS_TODAY}.${BUILD_NUMBER}')
+        @MY_VERSION = VersionNumber(versionNumberString: '${BUILD_DATE_FORMATTED, "yyyyMMdd"}.${BUILDS_TODAY}.${BUILD_NUMBER}')
         sh 'mvn versions:set versions:commit -DnewVersion=$TAG'
         sh 'mvn clean install'
         sh "git add ."
