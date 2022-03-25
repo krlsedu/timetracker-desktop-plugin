@@ -52,7 +52,7 @@ pipeline {
             sh 'export GITHUB_TOKEN='+env.password
 
             echo "Creating a new release in github"
-            sh 'github-release release --user krlsedu --security-token '+env.password+' --repo timetracker-desktop-plugin --tag '+TAG+' --name "'+TAG+'"'+PRE_RELEASE
+            sh 'github-release release --user krlsedu --security-token '+env.password+' --repo timetracker-desktop-plugin --tag '+TAG+' --name "'+TAG+'"'
 
             echo "Uploading the artifacts into github"
             sh 'github-release upload --user krlsedu --security-token '+env.password+' --repo timetracker-desktop-plugin --tag '+TAG+' --name "'+TAG+'" --file timetracker-desktop-plugin.zip'
