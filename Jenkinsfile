@@ -50,7 +50,7 @@ pipeline {
             sh 'export GITHUB_TOKEN=${password}'
 
             echo "Creating a new release in github"
-            sh 'github-release release --user krlsedu --repo timetracker-desktop-plugin --tag $TAG --name "${TAG}"'
+            sh 'github-release release --user krlsedu --repo timetracker-desktop-plugin --tag '+TAG+' --name "'+TAG+'"'
 
             echo "Uploading the artifacts into github"
             sh 'github-release upload --user krlsedu --repo timetracker-desktop-plugin --tag $TAG --name "${TAG}" --name "${PROJECT_NAME}-${VERSION_NAME}.zip" --file artifacts.zip'
