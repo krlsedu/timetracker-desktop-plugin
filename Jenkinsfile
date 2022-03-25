@@ -53,7 +53,7 @@ pipeline {
             echo "Uploading the artifacts into github"
             sleep(time:3,unit:"SECONDS")
 
-            sh 'github-release upload --user krlsedu --security-token '+env.password+' --repo timetracker-desktop-plugin --tag '+TAG+' --name "'+TAG+'" --file timetracker-desktop-plugin.zip'
+            sh 'github-release upload --user krlsedu --security-token '+env.password+' --repo timetracker-desktop-plugin --tag '+TAG+' --name "'+TAG+'.zip" --file timetracker-desktop-plugin.zip'
 
             script{
                 if (env.BRANCH_NAME == 'master') {

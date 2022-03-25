@@ -17,6 +17,7 @@ public class SqlLitle {
         Connection conn = DriverManager.getConnection(url);
         Statement statement = conn.createStatement();
         statement.execute("CREATE TABLE error( json text)");
+        statement.execute("CREATE TABLE sync( url text)");
         conn.close();
     }
 
@@ -45,6 +46,15 @@ public class SqlLitle {
         return url;
     }
 
+    public static void salvaUrl(String urlSalvar) throws Exception {
+        String url = getUrl();
+        Connection conn = DriverManager.getConnection(url);
+        PreparedStatement preparedStatement = conn.prepareStatement("insert into sync (url) values (?)");
+        preparedStatement.setString(1, urlSalvar);
+        preparedStatement.execute();
+        conn.close();
+    }
+
     public static void salva(String json) throws Exception {
         String url = getUrl();
         Connection conn = DriverManager.getConnection(url);
@@ -66,10 +76,13 @@ public class SqlLitle {
         var urls = getUrlsBkps();
         for (String url :
                 urls) {
-            var errors = getErrors(url);
-            for (String erro :
-                    errors) {
-                salva(erro);
+            if (!isUrlSync(url)) {
+                var errors = getErrors(url);
+                for (String erro :
+                        errors) {
+                    salva(erro);
+                }
+                salvaUrl(url);
             }
         }
         removeBkps();
@@ -111,6 +124,20 @@ public class SqlLitle {
         }
 
         return urls;
+    }
+
+    public static boolean isUrlSync(String urlCheck) throws SQLException {
+        String url = getUrl();
+        Connection conn = DriverManager.getConnection(url);
+        PreparedStatement preparedStatement = conn.prepareStatement("select * from sync where url = ?");
+
+        preparedStatement.setString(1, urlCheck);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        Boolean exist = resultSet.next();
+        preparedStatement = conn.prepareStatement("delete from error");
+        preparedStatement.execute();
+        conn.close();
+        return exist;
     }
 
     public static void getErrors(ConcurrentLinkedQueue<String> errors) throws SQLException {
