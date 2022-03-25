@@ -21,17 +21,17 @@ pipeline {
             }
             echo "${TAG}"
             sh 'mvn versions:set versions:commit -DnewVersion='+TAG
+            echo "5"
             echo "2"
             sh 'mvn clean install'
-            echo "3"
-            sh "git add ."
-            echo "4"
-            sh "git config --global user.email 'krlsedu@gmail.com'"
-            sh "git config --global user.name 'Carlos Eduardo Duarte Schwalm'"
-            sh "git commit -m 'Triggered Build: "+TAG+"'"
-            echo "5"
 
             sshagent(['github_global']){
+                echo "3"
+                sh "git add ."
+                echo "4"
+                sh "git config --global user.email 'krlsedu@gmail.com'"
+                sh "git config --global user.name 'Carlos Eduardo Duarte Schwalm'"
+                sh "git commit -m 'Triggered Build: "+TAG+"'"
                 sh 'git push origin '+env.BRANCH_NAME
              }
           }
