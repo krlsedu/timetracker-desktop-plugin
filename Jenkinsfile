@@ -31,11 +31,11 @@ pipeline {
         script {
             if (env.BRANCH_NAME == 'master') {
                 echo 'Master'
-                PRE_RELEASE = false
+                PRE_RELEASE = ''
                 TAG = VersionNumber(versionNumberString: '${BUILD_DATE_FORMATTED, "yyyyMMdd"}.${BUILDS_TODAY}.${BUILD_NUMBER}')
             } else {
                 echo 'Dev'
-                PRE_RELEASE = true
+                PRE_RELEASE = ' --pre-release'
                 TAG = 'Alpha-'+VersionNumber(versionNumberString: '${BUILD_DATE_FORMATTED, "yyyyMMdd"}.${BUILDS_TODAY}.${BUILD_NUMBER}')
             }
         }
@@ -52,7 +52,7 @@ pipeline {
             sh 'export GITHUB_TOKEN='+env.password
 
             echo "Creating a new release in github"
-            sh 'github-release release --user krlsedu --security-token '+env.password+' --repo timetracker-desktop-plugin --tag '+TAG+' --name "'+TAG+'" --pre-release '+PRE_RELEASE
+            sh 'github-release release --user krlsedu --security-token '+env.password+' --repo timetracker-desktop-plugin --tag '+TAG+' --name "'+TAG+'"'+PRE_RELEASE
 
             echo "Uploading the artifacts into github"
             sh 'github-release upload --user krlsedu --security-token '+env.password+' --repo timetracker-desktop-plugin --tag '+TAG+' --name "'+TAG+'" --file timetracker-desktop-plugin.zip'
