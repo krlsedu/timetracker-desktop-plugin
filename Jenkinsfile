@@ -49,11 +49,9 @@ pipeline {
         withCredentials([usernamePassword(credentialsId: 'github_global', passwordVariable: 'password', usernameVariable: 'user')]) {
 
             echo "Creating a new release in github"
-            sh 'github-release release --user krlsedu --security-token '+env.password+' --repo timetracker-desktop-plugin --tag '+TAG+' --name "'+TAG+'"'
+            sh 'github-release release --user krlsedu --security-token '+env.password+' --repo timetracker-desktop-plugin --tag '+TAG+' --name "'+TAG+'"'+PRE_RELEASE
 
             echo "Uploading the artifacts into github"
-            sh 'ls -l'
-
             sleep(time:3,unit:"SECONDS")
 
             sh 'github-release upload --user krlsedu --security-token '+env.password+' --repo timetracker-desktop-plugin --tag '+TAG+' --name "'+TAG+'" --file timetracker-desktop-plugin.zip'
