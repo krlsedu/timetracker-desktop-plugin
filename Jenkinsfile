@@ -53,6 +53,9 @@ pipeline {
 
             echo "Uploading the artifacts into github"
             sh 'ls -l'
+
+            sleep(time:3,unit:"SECONDS")
+
             sh 'github-release upload --user krlsedu --security-token '+env.password+' --repo timetracker-desktop-plugin --tag '+TAG+' --name "'+TAG+'" --file timetracker-desktop-plugin.zip'
 
             sh "git add ."
