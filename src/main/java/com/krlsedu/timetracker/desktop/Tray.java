@@ -32,7 +32,7 @@ public class Tray {
 		try {
 			tray.add(icon);
 		} catch (AWTException e) {
-			TimeTrackerCore.log.error(e);
+			TimeTrackerCore.log.error(e.getMessage());
 			return;
 		}
 

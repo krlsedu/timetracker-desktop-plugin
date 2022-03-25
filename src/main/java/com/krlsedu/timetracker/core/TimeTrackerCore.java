@@ -7,7 +7,7 @@ import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -18,7 +18,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 
 public class TimeTrackerCore {
-    public static final Logger log = Logger.getLogger(TimeTrackerCore.class);
+    public static final Logger log = com.krlsedu.TimeTracker.core.LoggerConf.getLogger(TimeTrackerCore.class);
     public static final int QUEUE_TIMEOUT_SECONDS = 10;
     public static final int QUEUE_ERRORS_TIMEOUT_SECONDS = 90;
     private static final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
@@ -56,7 +56,7 @@ public class TimeTrackerCore {
             try {
                 SqlLitle.getErrors(resincErrors);
             } catch (SQLException e) {
-                log.warn(e);
+                log.warn(e.getMessage());
             }
 
             while (true) {
@@ -94,9 +94,9 @@ public class TimeTrackerCore {
             try {
                 SqlLitle.salva(jsonString);
             } catch (Exception ex) {
-                log.warn(ex);
+                log.warn(ex.getMessage());
             }
-            log.warn(e);
+            log.warn(e.getMessage());
         }
     }
 
@@ -112,7 +112,7 @@ public class TimeTrackerCore {
                 var response = client.execute(post);
                 if (response.getStatusLine().getStatusCode() != 201) {
                     SqlLitle.salva(jsonString);
-                    log.warn(response);
+                    log.warn(response.toString());
                 }
             } else {
                 SqlLitle.salva(jsonString);
@@ -121,9 +121,9 @@ public class TimeTrackerCore {
             try {
                 SqlLitle.salva(jsonString);
             } catch (Exception ex) {
-                log.warn(ex);
+                log.warn(ex.getMessage());
             }
-            log.warn(e);
+            log.warn(e.getMessage());
         }
     }
 

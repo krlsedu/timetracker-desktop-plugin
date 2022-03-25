@@ -33,7 +33,7 @@ public class ApplicationDetailService {
 				aplicationDetail.setHostName(SystemInfo.getHostName());
 				TimeTrackerCore.appendHeartbeat(aplicationDetail);
 				if (TimeTrackerCore.isDebug()) {
-					TimeTrackerCore.log.info(aplicationDetail);
+					TimeTrackerCore.log.info(aplicationDetail.toString());
 				}
 			}
 			if (systemStat.isOnline()) {

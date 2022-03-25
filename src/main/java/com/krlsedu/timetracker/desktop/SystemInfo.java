@@ -47,7 +47,7 @@ public class SystemInfo {
 		
 		if (newState != state) {
 			state = newState;
-			TimeTrackerCore.log.info(state);
+			TimeTrackerCore.log.info(state.toString());
 			return true;
 		}
 		

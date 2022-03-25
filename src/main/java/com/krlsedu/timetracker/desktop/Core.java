@@ -47,8 +47,7 @@ public class Core {
 	}
 	
 	public static void error(Exception e) {
-		TimeTrackerCore.log.error(e);
-		TimeTrackerCore.log.error(e.fillInStackTrace());
+		TimeTrackerCore.log.error(e.getMessage());
 		TimeTrackerCore.log.error(e.getLocalizedMessage());
 		TimeTrackerCore.log.error(e.getMessage());
 		Tray.notifyError("There was an error in processing!\n" +
