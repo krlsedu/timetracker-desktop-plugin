@@ -48,9 +48,6 @@ pipeline {
 
         withCredentials([usernamePassword(credentialsId: 'github_global', passwordVariable: 'password', usernameVariable: 'user')]) {
 
-            echo "Exporting token and enterprise api to enable github-release tool"
-            sh 'export GITHUB_TOKEN='+env.password
-
             echo "Creating a new release in github"
             sh 'github-release release --user krlsedu --security-token '+env.password+' --repo timetracker-desktop-plugin --tag '+TAG+' --name "'+TAG+'"'
 
