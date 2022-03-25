@@ -34,7 +34,7 @@ pipeline {
                 sh "git config --global user.name 'Carlos Eduardo Duarte Schwalm'"
                 sh "git commit -m 'Triggered Build: "+TAG+"'"
                 sh 'git show-ref'
-                sh 'git -c core.quotepath=false -c log.showSignature=false push --progress --porcelain origin refs/heads/master:master'
+                sh 'git -c core.quotepath=false -c log.showSignature=false push --progress --porcelain origin refs/heads/master:refs/remotes/origin/master'
              }
           }
         }
