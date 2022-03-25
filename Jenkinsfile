@@ -10,7 +10,7 @@ pipeline {
             if (env.BRANCH_NAME == 'master') {
                 TAG = VersionNumber(versionNumberString: '${BUILD_DATE_FORMATTED, "yyyyMMdd"}.${BUILDS_TODAY}.${BUILD_NUMBER}')
             } else {
-                TAG = 'Alpha'+VersionNumber(versionNumberString: '${BUILD_DATE_FORMATTED, "yyyyMMdd"}.${BUILDS_TODAY}.${BUILD_NUMBER}')
+                TAG = 'Alpha-'+VersionNumber(versionNumberString: '${BUILD_DATE_FORMATTED, "yyyyMMdd"}.${BUILDS_TODAY}.${BUILD_NUMBER}')
             }
         }
         sh 'mvn versions:set versions:commit -DnewVersion=$TAG'
