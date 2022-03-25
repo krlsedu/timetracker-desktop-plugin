@@ -15,6 +15,7 @@ pipeline {
                 }
             }
             echo "${TAG}"
+            try{
             sh 'mvn versions:set versions:commit -DnewVersion=$TAG'
             echo "2"
             sh 'mvn clean install'
@@ -24,6 +25,10 @@ pipeline {
             sh "git commit -m 'Triggered Build: "+TAG+"'"
             echo "5"
             sh 'git push origin '+env.BRANCH_NAME
+            }
+                            catch(Exception e) {
+                                echo e
+                            }
           }
         }
     stage('Tests') {
