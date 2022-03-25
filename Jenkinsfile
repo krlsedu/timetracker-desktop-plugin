@@ -42,12 +42,12 @@ pipeline {
         sh 'mvn clean install'
 
         echo "Compressing artifacts into one file"
-        zip -r artifacts.zip target
+        sh 'zip -r artifacts.zip target'
 
         withCredentials([usernamePassword(credentialsId: 'github_global', passwordVariable: 'password', usernameVariable: 'user')]) {
 
             echo "Exporting token and enterprise api to enable github-release tool"
-            export GITHUB_TOKEN=${password}
+            sh 'export GITHUB_TOKEN=${password}'
 
             echo "Creating a new release in github"
             github-release release --user krlsedu --repo timetracker-desktop-plugin --tag $TAG --name "${TAG}"
