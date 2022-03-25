@@ -33,7 +33,7 @@ pipeline {
                 sh "git config --global user.name 'Carlos Eduardo Duarte Schwalm'"
                 sh "git commit -m 'Triggered Build: "+TAG+"'"
                 sh 'git show-ref'
-                sh 'git push -u origin '+env.BRANCH_NAME
+                sh 'git push -u origin HEAD:'+env.BRANCH_NAME
              }
           }
         }
