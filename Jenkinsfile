@@ -26,6 +26,8 @@ pipeline {
             echo "3"
             sh "git add ."
             echo "4"
+            sh "git config --global user.email 'krlsedu@gmail.com'"
+            sh "git config --global user.name 'Carlos Eduardo Duarte Schwalm'"
             sh "git commit -m 'Triggered Build: "+TAG+"'"
             echo "5"
             sh 'git push origin '+env.BRANCH_NAME
