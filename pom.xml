@@ -6,7 +6,7 @@
 
     <groupId>org.example</groupId>
     <artifactId>timeTracker-desktop-plugin</artifactId>
-    <version>20220325.45.46</version>
+    <version>Alpha-20220325.14.18</version>
 
     <dependencies>
         <dependency>
