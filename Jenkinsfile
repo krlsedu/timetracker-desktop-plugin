@@ -52,7 +52,7 @@ pipeline {
             sh 'github-release release --user krlsedu --security-token '+env.password+' --repo timetracker-desktop-plugin --tag '+TAG+' --name "'+TAG+'"'
 
             echo "Uploading the artifacts into github"
-            sh 'github-release upload --user krlsedu --security-token '+env.password+' --repo timetracker-desktop-plugin --tag '+TAG+' --name "'+TAG+'" --file timetracker-desktop-plugin.zip'
+            sh 'github-release upload --user krlsedu --security-token '+env.password+' --repo timetracker-desktop-plugin --tag '+TAG+' --name "'+TAG+'" --file /home/krlsedu/git-release/github-release'
 
             sh "git add ."
             sh "git config --global user.email 'krlsedu@gmail.com'"
