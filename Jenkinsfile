@@ -15,7 +15,7 @@ pipeline {
                 }
             }
             echo "${TAG}"
-            sh 'mvn versions:set versions:commit -DnewVersion='+TAG
+            sh 'mvn versions:set versions:commit -DnewVersion=$TAG'
             echo "2"
             sh 'mvn clean install'
             echo "3"
