@@ -42,7 +42,7 @@ pipeline {
         sh 'mvn clean install'
 
         echo "Compressing artifacts into one file"
-        sh 'zip -r artifacts.zip target'
+        sh 'zip -r timetracker-desktop-plugin.zip target'
 
         withCredentials([usernamePassword(credentialsId: 'github_global', passwordVariable: 'password', usernameVariable: 'user')]) {
 
@@ -53,7 +53,7 @@ pipeline {
             sh 'github-release release --user krlsedu --security-token '+env.password+' --repo timetracker-desktop-plugin --tag '+TAG+' --name "'+TAG+'"'
 
             echo "Uploading the artifacts into github"
-            sh 'github-release upload --user krlsedu --repo timetracker-desktop-plugin --tag $TAG --name "${TAG}" --name "${PROJECT_NAME}-${VERSION_NAME}.zip" --file artifacts.zip'
+            sh 'github-release upload --user krlsedu --security-token '+env.password+' --repo timetracker-desktop-plugin --tag '+TAG+' --name "'+PROJECT_NAME+'-'+VERSION_NAME+'.zip" --file timetracker-desktop-plugin.zip'
 
             sh "git add ."
             sh "git config --global user.email 'krlsedu@gmail.com'"
