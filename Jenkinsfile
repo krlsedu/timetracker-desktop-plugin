@@ -33,7 +33,7 @@ pipeline {
             sh "git commit -m 'Triggered Build: "+TAG+"'"
             sh 'git show-ref'
             withCredentials([usernamePassword(credentialsId: 'github_global', passwordVariable: 'password', usernameVariable: 'user')]) {
-              sh 'git push https://${user}:${password}@github.com/${user}/timetracker-desktop-plugin.git refs/remotes/origin/master:master'
+              sh 'git push https://${user}:${password}@github.com/${user}/timetracker-desktop-plugin.git origin HEAD:master'
             }
           }
         }
