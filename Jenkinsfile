@@ -32,6 +32,7 @@ pipeline {
                 sh "git config --global user.email 'krlsedu@gmail.com'"
                 sh "git config --global user.name 'Carlos Eduardo Duarte Schwalm'"
                 sh "git commit -m 'Triggered Build: "+TAG+"'"
+                sh 'git show-ref'
                 sh 'git push -u origin '+env.BRANCH_NAME
              }
           }
