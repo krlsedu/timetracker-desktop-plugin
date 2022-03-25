@@ -4,7 +4,7 @@ pipeline {
           maven 'M3'
       }
   environment {
-          MY_VERSION =
+          MY_VERSION = ''
   }
   stages {
     stage('Build') {
