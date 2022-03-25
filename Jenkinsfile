@@ -26,7 +26,7 @@ pipeline {
                 sh 'mvn versions:set versions:commit -DnewVersion='+TAG
                 echo "5"
                 echo "2"
-                sh 'mvn clean install'
+//                 sh 'mvn clean install'
                 echo "3"
                 sh "git add ."
                 echo "4"
@@ -34,7 +34,7 @@ pipeline {
                 sh "git config --global user.name 'Carlos Eduardo Duarte Schwalm'"
                 sh "git commit -m 'Triggered Build: "+TAG+"'"
                 sh 'git show-ref'
-                sh 'git -c core.quotepath=false -c log.showSignature=false push --progress --porcelain origin refs/heads/master:refs/remotes/origin/master'
+                sh 'git -c core.quotepath=false -c log.showSignature=false push --progress --porcelain origin refs/remotes/origin/master:refs/remotes/origin/master'
              }
           }
         }
