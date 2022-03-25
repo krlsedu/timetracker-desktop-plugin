@@ -30,7 +30,10 @@ pipeline {
             sh "git config --global user.name 'Carlos Eduardo Duarte Schwalm'"
             sh "git commit -m 'Triggered Build: "+TAG+"'"
             echo "5"
-            sh 'git push origin '+env.BRANCH_NAME
+
+            sshagent(['github_global']){
+                sh 'git push origin '+env.BRANCH_NAME
+             }
           }
         }
     stage('Tests') {
