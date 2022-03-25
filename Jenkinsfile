@@ -7,11 +7,14 @@ pipeline {
           steps {
             script {
                 if (env.BRANCH_NAME == 'master') {
+                    echo 'Master'
                     TAG = VersionNumber(versionNumberString: '${BUILD_DATE_FORMATTED, "yyyyMMdd"}.${BUILDS_TODAY}.${BUILD_NUMBER}')
                 } else {
+                    echo 'Dev'
                     TAG = 'Alpha-'+VersionNumber(versionNumberString: '${BUILD_DATE_FORMATTED, "yyyyMMdd"}.${BUILDS_TODAY}.${BUILD_NUMBER}')
                 }
             }
+            echo '$TAG'
             sh 'mvn versions:set versions:commit -DnewVersion=$TAG'
             sh 'mvn clean install'
             sh "git add ."
