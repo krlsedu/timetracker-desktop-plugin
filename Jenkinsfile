@@ -20,12 +20,13 @@ pipeline {
                 }
             }
             echo "${TAG}"
-            sh 'mvn versions:set versions:commit -DnewVersion='+TAG
-            echo "5"
-            echo "2"
-            sh 'mvn clean install'
 
             sshagent(['github_global']){
+                sh 'git pull origin master'
+                sh 'mvn versions:set versions:commit -DnewVersion='+TAG
+                echo "5"
+                echo "2"
+                sh 'mvn clean install'
                 echo "3"
                 sh "git add ."
                 echo "4"
@@ -33,7 +34,6 @@ pipeline {
                 sh "git config --global user.name 'Carlos Eduardo Duarte Schwalm'"
                 sh "git commit -m 'Triggered Build: "+TAG+"'"
                 sh 'git show-ref'
-                sh 'git pull origin master'
                 sh 'git push origin '+env.BRANCH_NAME
              }
           }
