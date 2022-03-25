@@ -35,7 +35,7 @@ pipeline {
             withCredentials([usernamePassword(credentialsId: 'github_global', passwordVariable: 'password', usernameVariable: 'user')]) {
                 echo "user ${env.user}"
                 echo "user ${user}"
-              sh 'git push https://krlsedu@github.com/krlsedu/timetracker-desktop-plugin.git HEAD:master'
+              sh 'git push https://krlsedu:${env.password}@github.com/krlsedu/timetracker-desktop-plugin.git HEAD:master'
             }
           }
         }
