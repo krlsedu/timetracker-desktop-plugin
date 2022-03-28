@@ -26,3 +26,7 @@ In that case, add this line to your `~/timeTracker.cfg` file:
     debug = true
 
 (`C:\Users\<user>\.timeTracker\timeTracker.cfg`)
+
+## Back-end
+Run the docker-compose
+https://github.com/krlsedu/SBootTimeTracker
