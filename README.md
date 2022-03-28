@@ -28,5 +28,7 @@ In that case, add this line to your `~/timeTracker.cfg` file:
 (`C:\Users\<user>\.timeTracker\timeTracker.cfg`)
 
 ## Back-end
-Run the docker-compose
+Run the docker-compose in 
 https://github.com/krlsedu/SBootTimeTracker
+
+Or create your own ambient
