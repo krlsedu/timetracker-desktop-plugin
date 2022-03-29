@@ -4,9 +4,11 @@ import com.krlsedu.timetracker.core.TimeTrackerCore;
 import com.krlsedu.timetracker.core.model.ApplicationDetail;
 import com.sun.jna.Native;
 import com.sun.jna.platform.win32.WinDef;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.Date;
 
+@Slf4j
 public class ApplicationDetailService {
     private static final int MAX_TITLE_LENGTH = 1024;
     private static final SystemInfo systemStat = new SystemInfo();
@@ -33,7 +35,7 @@ public class ApplicationDetailService {
                 aplicationDetail.setHostName(SystemInfo.getHostName());
                 TimeTrackerCore.appendHeartbeat(aplicationDetail);
                 if (TimeTrackerCore.isDebug()) {
-                    TimeTrackerCore.log.info(aplicationDetail.toString());
+                    log.info(aplicationDetail.toString());
                 }
             }
             if (systemStat.isOnline()) {

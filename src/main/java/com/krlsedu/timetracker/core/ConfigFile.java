@@ -2,9 +2,12 @@
 
 package com.krlsedu.timetracker.core;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 
+@Slf4j
 public class ConfigFile {
     private static final String TIMETRACKER_CFG = "timeTracker.cfg";
     private static String resourcesLocation = null;
@@ -16,7 +19,7 @@ public class ConfigFile {
     private static String getConfigFilePath() {
         ConfigFile.timeTrackerCachedConfigFile = new File(getResourcesLocation(), ConfigFile.TIMETRACKER_CFG).getAbsolutePath();
         if (TimeTrackerCore.isDebug()) {
-            TimeTrackerCore.log.debug("Using $HOME for config folder: " + ConfigFile.timeTrackerCachedConfigFile);
+            log.debug("Using $HOME for config folder: " + ConfigFile.timeTrackerCachedConfigFile);
         }
         return ConfigFile.timeTrackerCachedConfigFile;
     }

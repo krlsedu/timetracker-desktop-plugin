@@ -1,8 +1,9 @@
 
 package com.krlsedu.timetracker.desktop;
 
+import com.krlsedu.timetracker.core.ConfigFile;
 import com.krlsedu.timetracker.core.SqlLitle;
-import com.krlsedu.timetracker.core.TimeTrackerCore;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.swing.*;
 import java.awt.*;
@@ -10,6 +11,7 @@ import java.awt.*;
 /**
  * @author Carlos Eduardo Duarte Schwalm
  */
+@Slf4j
 public class Tray {
 	private static MenuItem togleExecution;
 	private static TrayIcon icon;
@@ -18,21 +20,21 @@ public class Tray {
 	}
 	
 	public static void config() {
-		
+
 		if (!SystemTray.isSupported()) {
 			return;
 		}
-		
+
 		SystemTray tray = SystemTray.getSystemTray();
-		
-		ImageIcon offIcon = new ImageIcon(ClassLoader.getSystemResource("icon.png"));
+
+		ImageIcon offIcon = new ImageIcon(ConfigFile.getResourcesLocation() + "\\timetracker-desktop-plugin.png");
 		PopupMenu popup = new PopupMenu();
 		icon = new TrayIcon(offIcon.getImage(), "TimeTracker-desktop-plugin", popup);
 		icon.setImageAutoSize(true);
 		try {
 			tray.add(icon);
 		} catch (AWTException e) {
-			TimeTrackerCore.log.error(e.getMessage());
+			log.error(e.getMessage());
 			return;
 		}
 

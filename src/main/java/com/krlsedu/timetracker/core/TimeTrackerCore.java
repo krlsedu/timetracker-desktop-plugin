@@ -2,13 +2,15 @@ package com.krlsedu.timetracker.core;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.krlsedu.timetracker.core.model.ApplicationDetail;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
-import org.slf4j.Logger;
 
+import java.io.FileNotFoundException;
+import java.io.PrintStream;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,8 +19,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 
+@Slf4j
 public class TimeTrackerCore {
-    public static final Logger log = com.krlsedu.TimeTracker.core.LoggerConf.getLogger(TimeTrackerCore.class);
     public static final int QUEUE_TIMEOUT_SECONDS = 10;
     public static final int QUEUE_ERRORS_TIMEOUT_SECONDS = 90;
     private static final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
@@ -141,6 +143,14 @@ public class TimeTrackerCore {
     public static void setupDebugging() {
         String debug = ConfigFile.get("settings", "debug");
         TimeTrackerCore.debug = debug != null && debug.trim().equals("true");
+        PrintStream fileStream = null;
+        try {
+            fileStream = new PrintStream(ConfigFile.getResourcesLocation() + "\\timetracker-desktop-plugin.log");
+            System.setOut(fileStream);
+            System.setErr(fileStream);
+        } catch (FileNotFoundException e) {
+            log.error(e.getMessage());
+        }
     }
 
     public static boolean isDebug() {

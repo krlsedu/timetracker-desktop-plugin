@@ -3,15 +3,18 @@ package com.krlsedu.timetracker.desktop;
 import com.krlsedu.timetracker.core.TimeTrackerCore;
 import com.sun.jna.platform.win32.User32;
 import com.sun.jna.platform.win32.WinDef;
+import lombok.extern.slf4j.Slf4j;
 
+
+@Slf4j
 public class Core {
-	
+
 	private static final int WAIT_TIME = 100;
 	private static boolean ativo = true;
-	
+
 	private Core() {
 	}
-	
+
 	public static void start() {
 		ativate();
 		TimeTrackerCore.init();
@@ -21,10 +24,10 @@ public class Core {
 			Tray.notifyInfo("Plugin initiated!");
 		}
 	}
-	
+
 	private static void tracker() {
 		if (TimeTrackerCore.isDebug()) {
-			TimeTrackerCore.log.info("Initiated");
+			log.info("Initiated");
 		}
 		do {
 			try {
@@ -42,46 +45,46 @@ public class Core {
 			}
 		} while (isAtivo());
 		if (TimeTrackerCore.isDebug() && !isAtivo()) {
-			TimeTrackerCore.log.info("Stooped");
+			log.info("Stooped");
 		}
 	}
-	
+
 	public static void error(Exception e) {
-		TimeTrackerCore.log.error(e.getMessage());
-		TimeTrackerCore.log.error(e.getLocalizedMessage());
-		TimeTrackerCore.log.error(e.getMessage());
+		log.error(e.getMessage());
+		log.error(e.getLocalizedMessage());
+		log.error(e.getMessage());
 		Tray.notifyError("There was an error in processing!\n" +
 				"The plugin will restart.");
 		restart();
 	}
-	
+
 	public static boolean isAtivo() {
 		return ativo;
 	}
-	
+
 	public static void setAtivo(boolean ativo) {
 		Core.ativo = ativo;
 	}
-	
+
 	public static void alternStatus() {
 		setAtivo(!Core.isAtivo());
 	}
-	
+
 	public static void ativate() {
 		setAtivo(true);
 	}
-	
+
 	public static void desativate() {
 		setAtivo(false);
 	}
-	
+
 	public static void stop() {
 		desativate();
 		ApplicationDetailService.clearAplicationDetail();
 		TimeTrackerCore.stopQueue();
 		Tray.togleLabel();
 	}
-	
+
 	public static void restart() {
 		stop();
 		start();
