@@ -21,4 +21,5 @@ public class ApplicationDetail {
 	private String pluginName;
 	private String processName;
 	private String appVersion;
+	private String url;
 }
