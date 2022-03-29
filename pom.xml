@@ -15,7 +15,7 @@
     <version>20220328.1.52</version>
 
     <properties>
-        <java.version>17</java.version>
+        <java.version>11</java.version>
     </properties>
 
     <dependencies>
