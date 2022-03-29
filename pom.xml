@@ -12,7 +12,7 @@
 
     <groupId>org.example</groupId>
     <artifactId>timeTracker-desktop-plugin</artifactId>
-    <version>20220325.49.50</version>
+    <version>20220328.1.52</version>
 
     <dependencies>
         <dependency>
