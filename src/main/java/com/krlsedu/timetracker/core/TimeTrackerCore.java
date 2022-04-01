@@ -2,12 +2,9 @@ package com.krlsedu.timetracker.core;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.krlsedu.timetracker.core.model.ApplicationDetail;
+import com.mashape.unirest.http.Unirest;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.ContentType;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.HttpHost;
 
 import java.io.FileNotFoundException;
 import java.io.PrintStream;
@@ -106,13 +103,17 @@ public class TimeTrackerCore {
         try {
             if (!ConfigFile.isTimeTrackerOffline()) {
                 System.setProperty("org.apache.commons.logging.Log", "org.apache.commons.logging.impl.NoOpLog");
-                CloseableHttpClient client = HttpClientBuilder.create().build();
-                HttpPost post = new HttpPost(ConfigFile.urlTimeTracker());
 
-                post.setEntity(new StringEntity(jsonString, ContentType.APPLICATION_JSON));
-
-                var response = client.execute(post);
-                if (response.getStatusLine().getStatusCode() != 201) {
+                var urlProxy = ConfigFile.urlProxy();
+                var port = ConfigFile.portProxy();
+                if (urlProxy != null && port != null) {
+                    Unirest.setProxy(new HttpHost(urlProxy, port));
+                }
+                var response = Unirest.post(ConfigFile.urlTimeTracker())
+                        .header("Content-Type", "application/json")
+                        .body(jsonString)
+                        .asString();
+                if (response.getStatus() != 201) {
                     SqlLitle.salva(jsonString);
                     log.warn(response.toString());
                 }

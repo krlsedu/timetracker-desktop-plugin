@@ -155,6 +155,18 @@ public class ConfigFile {
         return !(setting == null || setting.equals("false"));
     }
 
+    public static String urlProxy() {
+        return ConfigFile.get("settings", "urlProxy");
+    }
+
+    public static Integer portProxy() {
+        try {
+            return Integer.parseInt(ConfigFile.get("settings", "portProxy"));
+        } catch (NumberFormatException e) {
+            return null;
+        }
+    }
+
     public static String urlTimeTracker() {
         return ConfigFile.get("settings", "urlTimeTracker");
     }
