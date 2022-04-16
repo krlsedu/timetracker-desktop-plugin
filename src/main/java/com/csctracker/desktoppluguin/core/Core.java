@@ -111,11 +111,12 @@ public class Core {
                 }
                 var response = Unirest.post(ConfigFile.urlCscTracker())
                         .header("Content-Type", "application/json")
+                        .header("Authorization", "Bearer " + ConfigFile.tokenCscTracker())
                         .body(jsonString)
                         .asString();
                 if (response.getStatus() != 201) {
                     SqlLitle.salva(jsonString);
-                    log.warn(response.toString());
+                    log.warn(response.getBody());
                 }
             } else {
                 SqlLitle.salva(jsonString);

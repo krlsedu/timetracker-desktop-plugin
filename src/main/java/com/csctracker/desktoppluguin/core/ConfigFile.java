@@ -168,8 +168,12 @@ public class ConfigFile {
     }
 
     public static String urlCscTracker() {
-        return "http://45.79.41.108:8090/usage-info";
-//        return ConfigFile.get("settings", "urlCscTracker");
+//        return "http://45.79.41.108:8090/usage-info";
+        return ConfigFile.get("settings", "urlCscTracker");
+    }
+
+    public static String tokenCscTracker() {
+        return ConfigFile.get("settings", "tokenCscTracker");
     }
 
     public static boolean isWindows() {
