@@ -1,8 +1,8 @@
 
-package com.krlsedu.timetracker.desktop;
+package com.csctracker.desktoppluguin.desktop;
 
-import com.krlsedu.timetracker.core.ConfigFile;
-import com.krlsedu.timetracker.core.SqlLitle;
+import com.csctracker.desktoppluguin.core.ConfigFile;
+import com.csctracker.desktoppluguin.core.SqlLitle;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.swing.*;
@@ -27,9 +27,9 @@ public class Tray {
 
 		SystemTray tray = SystemTray.getSystemTray();
 
-		ImageIcon offIcon = new ImageIcon(ConfigFile.getResourcesLocation() + "\\timetracker-desktop-plugin.png");
+		ImageIcon offIcon = new ImageIcon(ConfigFile.getResourcesLocation() + "\\csctracker-desktop-plugin.png");
 		PopupMenu popup = new PopupMenu();
-		icon = new TrayIcon(offIcon.getImage(), "TimeTracker-desktop-plugin", popup);
+		icon = new TrayIcon(offIcon.getImage(), "CscTracker-desktop-plugin", popup);
 		icon.setImageAutoSize(true);
 		try {
 			tray.add(icon);
@@ -79,11 +79,11 @@ public class Tray {
 	}
 	
 	public static void notifyInfo(String msg) {
-		icon.displayMessage("TimeTracker desktop plugin", msg, TrayIcon.MessageType.INFO);
+		icon.displayMessage("CscTracker desktop plugin", msg, TrayIcon.MessageType.INFO);
 	}
 	
 	public static void notifyError(String msg) {
-		icon.displayMessage("TimeTracker desktop plugin", msg, TrayIcon.MessageType.ERROR);
+		icon.displayMessage("CscTracker desktop plugin", msg, TrayIcon.MessageType.ERROR);
 	}
 }
 

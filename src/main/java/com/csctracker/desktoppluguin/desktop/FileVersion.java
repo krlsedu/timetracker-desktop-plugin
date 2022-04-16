@@ -1,6 +1,6 @@
-package com.krlsedu.timetracker.desktop;
+package com.csctracker.desktoppluguin.desktop;
 
-import com.krlsedu.timetracker.core.model.ApplicationDetail;
+import com.csctracker.desktoppluguin.core.model.ApplicationDetail;
 import com.sun.jna.Memory;
 import com.sun.jna.Pointer;
 import com.sun.jna.Structure;

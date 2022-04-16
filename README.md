@@ -1,4 +1,4 @@
-# timetracker-desktop-plugin
+# csctracker-desktop-plugin
 
 Supports Windows (for now, future suports linux systens):
 
@@ -6,29 +6,29 @@ Supports Windows (for now, future suports linux systens):
 
 1. Clone and build your jar.
 
-2. Put the config file  (.timeTracker-desktop-plugin-config.json) in your user folder.
+2. Put the config file  (.CscTracker-desktop-plugin-config.json) in your user folder.
 
 3. Run the jar and put to start with windows boot
 
 ## Configuring
 
-timeTracker for desktop can be configured via file
-(`C:\Users\<user>\.timeTracker\timeTracker-desktop-plugin-config.json`)
+cscTracker for desktop can be configured via file
+(`C:\Users\<user>\.cscTracker\cscTracker-desktop-plugin-config.json`)
 
 ## Troubleshooting
 
-First, turn on debug mode from File -> timeTracker Settings..
+First, turn on debug mode from File -> cscTracker Settings..
 
-Now, look for timeTracker related messages in your `.timeTracker/timeTracker-desktop-plugin.log` file:
+Now, look for cscTracker related messages in your `.cscTracker/cscTracker-desktop-plugin.log` file:
 
-In that case, add this line to your `~/timeTracker.cfg` file:
+In that case, add this line to your `~/cscTracker.cfg` file:
 
     debug = true
 
-(`C:\Users\<user>\.timeTracker\timeTracker.cfg`)
+(`C:\Users\<user>\.cscTracker\cscTracker.cfg`)
 
 ## Back-end
-Run the docker-compose in 
-https://github.com/krlsedu/SBootTimeTracker
+Run the docker-compose in
+https://github.com/krlsedu/SBootCscTracker
 
 Or create your own ambient

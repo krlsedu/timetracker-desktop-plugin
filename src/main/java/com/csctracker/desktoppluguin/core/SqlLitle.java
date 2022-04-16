@@ -1,4 +1,4 @@
-package com.krlsedu.timetracker.core;
+package com.csctracker.desktoppluguin.core;
 
 import java.io.File;
 import java.sql.*;
@@ -10,7 +10,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class SqlLitle {
 
-    private static final String DB_NAME = ".timetracker-desktop-plugin.db";
+    private static final String DB_NAME = ".csctracker-desktop-plugin.db";
     private static final String BKPS = "bkps/";
 
     public static void createNewDatabase(String url) throws SQLException {
@@ -35,7 +35,7 @@ public class SqlLitle {
 
     private static String getUrlBkp() throws SQLException {
         String relativePath = ConfigFile.getResourcesLocation();
-        String fileName = relativePath + "\\bkps\\.timetracker-desktop-plugin" + new SimpleDateFormat("-yyMMdd-hhmmss").format(new Date()) + ".db";
+        String fileName = relativePath + "\\bkps\\.csctracker-desktop-plugin" + new SimpleDateFormat("-yyMMdd-hhmmss").format(new Date()) + ".db";
         File file = new File(fileName);
         String url = "jdbc:sqlite:" + fileName;
 

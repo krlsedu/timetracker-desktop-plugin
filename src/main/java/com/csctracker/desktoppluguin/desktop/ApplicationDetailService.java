@@ -1,7 +1,7 @@
-package com.krlsedu.timetracker.desktop;
+package com.csctracker.desktoppluguin.desktop;
 
-import com.krlsedu.timetracker.core.TimeTrackerCore;
-import com.krlsedu.timetracker.core.model.ApplicationDetail;
+import com.csctracker.desktoppluguin.core.Core;
+import com.csctracker.desktoppluguin.core.model.ApplicationDetail;
 import com.sun.jna.Native;
 import com.sun.jna.platform.win32.WinDef;
 import lombok.extern.slf4j.Slf4j;
@@ -33,8 +33,8 @@ public class ApplicationDetailService {
                 aplicationDetail.setTimeSpentMillis(aplicationDetail.getDateEnd().getTime() - aplicationDetail.getDateIni().getTime());
                 aplicationDetail.setOsName(SystemInfo.getOsName());
                 aplicationDetail.setHostName(SystemInfo.getHostName());
-                TimeTrackerCore.appendHeartbeat(aplicationDetail);
-                if (TimeTrackerCore.isDebug()) {
+                Core.appendHeartbeat(aplicationDetail);
+                if (Core.isDebug()) {
                     log.info(aplicationDetail.toString());
                 }
             }
@@ -61,7 +61,7 @@ public class ApplicationDetailService {
 
     private static boolean forceAttAppDetails() {
         long timeSpent = new Date().getTime() - lastTimeDetailChange;
-        return timeSpent > (TimeTrackerCore.QUEUE_TIMEOUT_SECONDS * 1000);
+        return timeSpent > (Core.QUEUE_TIMEOUT_SECONDS * 1000);
     }
 
     public static void clearAplicationDetail() {

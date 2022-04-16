@@ -1,6 +1,5 @@
-package com.krlsedu.timetracker.desktop;
+package com.csctracker.desktoppluguin.desktop;
 
-import com.krlsedu.timetracker.core.TimeTrackerCore;
 import com.sun.jna.platform.win32.User32;
 import com.sun.jna.platform.win32.WinDef;
 import lombok.extern.slf4j.Slf4j;
@@ -17,8 +16,8 @@ public class Core {
 
 	public static void start() {
 		ativate();
-		TimeTrackerCore.init();
-		new Thread(Core::tracker).start();
+		com.csctracker.desktoppluguin.core.Core.init();
+		new Thread(com.csctracker.desktoppluguin.desktop.Core::tracker).start();
 		Tray.togleLabel();
 		if (isAtivo()) {
 			Tray.notifyInfo("Plugin initiated!");
@@ -26,7 +25,7 @@ public class Core {
 	}
 
 	private static void tracker() {
-		if (TimeTrackerCore.isDebug()) {
+		if (com.csctracker.desktoppluguin.core.Core.isDebug()) {
 			log.info("Initiated");
 		}
 		do {
@@ -44,7 +43,7 @@ public class Core {
 				break;
 			}
 		} while (isAtivo());
-		if (TimeTrackerCore.isDebug() && !isAtivo()) {
+		if (com.csctracker.desktoppluguin.core.Core.isDebug() && !isAtivo()) {
 			log.info("Stooped");
 		}
 	}
@@ -63,11 +62,11 @@ public class Core {
 	}
 
 	public static void setAtivo(boolean ativo) {
-		Core.ativo = ativo;
+		com.csctracker.desktoppluguin.desktop.Core.ativo = ativo;
 	}
 
 	public static void alternStatus() {
-		setAtivo(!Core.isAtivo());
+		setAtivo(!com.csctracker.desktoppluguin.desktop.Core.isAtivo());
 	}
 
 	public static void ativate() {
@@ -81,7 +80,7 @@ public class Core {
 	public static void stop() {
 		desativate();
 		ApplicationDetailService.clearAplicationDetail();
-		TimeTrackerCore.stopQueue();
+		com.csctracker.desktoppluguin.core.Core.stopQueue();
 		Tray.togleLabel();
 	}
 

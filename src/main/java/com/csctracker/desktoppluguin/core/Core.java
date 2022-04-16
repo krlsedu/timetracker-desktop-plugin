@@ -1,7 +1,7 @@
-package com.krlsedu.timetracker.core;
+package com.csctracker.desktoppluguin.core;
 
+import com.csctracker.desktoppluguin.core.model.ApplicationDetail;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.krlsedu.timetracker.core.model.ApplicationDetail;
 import com.mashape.unirest.http.Unirest;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpHost;
@@ -17,7 +17,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 
 @Slf4j
-public class TimeTrackerCore {
+public class Core {
     public static final int QUEUE_TIMEOUT_SECONDS = 10;
     public static final int QUEUE_ERRORS_TIMEOUT_SECONDS = 90;
     private static final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
@@ -29,7 +29,7 @@ public class TimeTrackerCore {
     private static ScheduledFuture<?> scheduledFixture;
     private static ScheduledFuture<?> scheduledFixtureErrors;
 
-    private TimeTrackerCore() {
+    private Core() {
     }
 
     public static void init() {
@@ -38,8 +38,8 @@ public class TimeTrackerCore {
     }
 
     private static void setupQueueProcessor() {
-        final Runnable handler = TimeTrackerCore::processHeartbeatQueue;
-        final Runnable handlerErros = TimeTrackerCore::resincErrors;
+        final Runnable handler = Core::processHeartbeatQueue;
+        final Runnable handlerErros = Core::resincErrors;
         long delay = QUEUE_TIMEOUT_SECONDS;
         scheduledFixture = scheduler.scheduleAtFixedRate(handler, delay, delay, java.util.concurrent.TimeUnit.SECONDS);
         scheduledFixtureErrors = schedulerErrors.scheduleAtFixedRate(handlerErros, QUEUE_ERRORS_TIMEOUT_SECONDS, QUEUE_ERRORS_TIMEOUT_SECONDS, java.util.concurrent.TimeUnit.SECONDS);
@@ -51,7 +51,7 @@ public class TimeTrackerCore {
     }
 
     private static void resincErrors() {
-        if (!ConfigFile.isTimeTrackerOffline()) {
+        if (!ConfigFile.isCscTrackerOffline()) {
             try {
                 SqlLitle.getErrors(resincErrors);
             } catch (SQLException e) {
@@ -70,16 +70,16 @@ public class TimeTrackerCore {
 
     private static void processHeartbeatQueue() {
 
-        List<ApplicationDetail> timeTrackerHeartbets = new ArrayList<>();
+        List<ApplicationDetail> cscTrackerHeartbets = new ArrayList<>();
         while (true) {
             ApplicationDetail h = heartbeatsQueue.poll();
             if (h == null)
                 break;
 
-            timeTrackerHeartbets.add(h);
+            cscTrackerHeartbets.add(h);
         }
 
-        send(timeTrackerHeartbets);
+        send(cscTrackerHeartbets);
     }
 
     public static void send(List<ApplicationDetail> heartbeats) {
@@ -101,7 +101,7 @@ public class TimeTrackerCore {
 
     private static void send(String jsonString) {
         try {
-            if (!ConfigFile.isTimeTrackerOffline()) {
+            if (!ConfigFile.isCscTrackerOffline()) {
                 System.setProperty("org.apache.commons.logging.Log", "org.apache.commons.logging.impl.NoOpLog");
 
                 var urlProxy = ConfigFile.urlProxy();
@@ -109,7 +109,7 @@ public class TimeTrackerCore {
                 if (urlProxy != null && port != null) {
                     Unirest.setProxy(new HttpHost(urlProxy, port));
                 }
-                var response = Unirest.post(ConfigFile.urlTimeTracker())
+                var response = Unirest.post(ConfigFile.urlCscTracker())
                         .header("Content-Type", "application/json")
                         .body(jsonString)
                         .asString();
@@ -143,10 +143,10 @@ public class TimeTrackerCore {
 
     public static void setupDebugging() {
         String debug = ConfigFile.get("settings", "debug");
-        TimeTrackerCore.debug = debug != null && debug.trim().equals("true");
+        Core.debug = debug != null && debug.trim().equals("true");
         PrintStream fileStream = null;
         try {
-            fileStream = new PrintStream(ConfigFile.getResourcesLocation() + "\\timetracker-desktop-plugin.log");
+            fileStream = new PrintStream(ConfigFile.getResourcesLocation() + "\\csctracker-desktop-plugin.log");
             System.setOut(fileStream);
             System.setErr(fileStream);
         } catch (FileNotFoundException e) {

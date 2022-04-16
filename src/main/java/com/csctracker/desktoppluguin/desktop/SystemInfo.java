@@ -1,4 +1,4 @@
-package com.krlsedu.timetracker.desktop;
+package com.csctracker.desktoppluguin.desktop;
 
 import lombok.extern.slf4j.Slf4j;
 

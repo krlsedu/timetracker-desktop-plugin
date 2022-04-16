@@ -1,6 +1,6 @@
 
 
-package com.krlsedu.timetracker.core;
+package com.csctracker.desktoppluguin.core;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -9,19 +9,19 @@ import java.nio.charset.StandardCharsets;
 
 @Slf4j
 public class ConfigFile {
-    private static final String TIMETRACKER_CFG = "timeTracker.cfg";
+    private static final String TIMETRACKER_CFG = "cscTracker.cfg";
     private static String resourcesLocation = null;
-    private static String timeTrackerCachedConfigFile = null;
+    private static String cscTrackerCachedConfigFile = null;
 
     private ConfigFile() {
     }
 
     private static String getConfigFilePath() {
-        ConfigFile.timeTrackerCachedConfigFile = new File(getResourcesLocation(), ConfigFile.TIMETRACKER_CFG).getAbsolutePath();
-        if (TimeTrackerCore.isDebug()) {
-            log.debug("Using $HOME for config folder: " + ConfigFile.timeTrackerCachedConfigFile);
+        ConfigFile.cscTrackerCachedConfigFile = new File(getResourcesLocation(), ConfigFile.TIMETRACKER_CFG).getAbsolutePath();
+        if (Core.isDebug()) {
+            log.debug("Using $HOME for config folder: " + ConfigFile.cscTrackerCachedConfigFile);
         }
-        return ConfigFile.timeTrackerCachedConfigFile;
+        return ConfigFile.cscTrackerCachedConfigFile;
     }
 
     public static String getResourcesLocation() {
@@ -29,13 +29,13 @@ public class ConfigFile {
 
         if (ConfigFile.isWindows()) {
             File windowsHome = new File(System.getenv("USERPROFILE"));
-            File resourcesFolder = new File(windowsHome, ".timeTracker");
+            File resourcesFolder = new File(windowsHome, ".cscTracker");
             resourcesLocation = resourcesFolder.getAbsolutePath();
             return resourcesLocation;
         }
 
         File userHomeDir = new File(System.getProperty("user.home"));
-        File resourcesFolder = new File(userHomeDir, ".timeTracker");
+        File resourcesFolder = new File(userHomeDir, ".cscTracker");
         resourcesLocation = resourcesFolder.getAbsolutePath();
         return resourcesLocation;
     }
@@ -150,8 +150,8 @@ public class ConfigFile {
         }
     }
 
-    public static boolean isTimeTrackerOffline() {
-        String setting = ConfigFile.get("settings", "timeTrackerOffline");
+    public static boolean isCscTrackerOffline() {
+        String setting = ConfigFile.get("settings", "cscTrackerOffline");
         return !(setting == null || setting.equals("false"));
     }
 
@@ -167,8 +167,9 @@ public class ConfigFile {
         }
     }
 
-    public static String urlTimeTracker() {
-        return ConfigFile.get("settings", "urlTimeTracker");
+    public static String urlCscTracker() {
+        return "http://45.79.41.108:8090/usage-info";
+//        return ConfigFile.get("settings", "urlCscTracker");
     }
 
     public static boolean isWindows() {

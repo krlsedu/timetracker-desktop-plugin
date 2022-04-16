@@ -1,4 +1,4 @@
-package com.krlsedu.timetracker.desktop;
+package com.csctracker.desktoppluguin.desktop;
 
 import java.util.HashMap;
 import java.util.Map;

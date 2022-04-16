@@ -1,14 +1,14 @@
-package com.krlsedu.timetracker;
+package com.csctracker.desktoppluguin;
 
 
-import com.krlsedu.timetracker.desktop.Core;
-import com.krlsedu.timetracker.desktop.Tray;
+import com.csctracker.desktoppluguin.desktop.Core;
+import com.csctracker.desktoppluguin.desktop.Tray;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 
 @SpringBootApplication
-public class TimeTrackerDesktopPlugin {
+public class CscTrackerDesktopPlugin {
 
     public static void main(String[] args) {
         Tray.config();
@@ -17,6 +17,6 @@ public class TimeTrackerDesktopPlugin {
             Tray.notifyError(e.getMessage());
             Core.restart();
         });
-        SpringApplication.run(TimeTrackerDesktopPlugin.class, args);
+        SpringApplication.run(CscTrackerDesktopPlugin.class, args);
     }
 }
