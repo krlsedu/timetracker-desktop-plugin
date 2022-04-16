@@ -48,12 +48,12 @@ pipeline {
 
                 withCredentials([usernamePassword(credentialsId: 'github_global', passwordVariable: 'password', usernameVariable: 'user')]) {
                     echo "Creating a new release in github"
-                    sh 'github-release release --user krlsedu --security-token ' + env.password + ' --repo csctracker-desktop-plugin --tag ' + TAG + ' --name "' + TAG + '"' + PRE_RELEASE
+                    sh 'github-release release --user krlsedu --security-token ' + env.password + ' --repo timetracker-desktop-plugin --tag ' + TAG + ' --name "' + TAG + '"' + PRE_RELEASE
 
                     echo "Uploading the artifacts into github"
                     sleep(time: 3, unit: "SECONDS")
 
-                    sh 'github-release upload --user krlsedu --security-token ' + env.password + ' --repo csctracker-desktop-plugin --tag ' + TAG + ' --name csctracker-desktop-plugin-"' + TAG + '.zip" --file csctracker-desktop-plugin.zip'
+                    sh 'github-release upload --user krlsedu --security-token ' + env.password + ' --repo timetracker-desktop-plugin --tag ' + TAG + ' --name csctracker-desktop-plugin-"' + TAG + '.zip" --file csctracker-desktop-plugin.zip'
 
                     script {
                         if (env.BRANCH_NAME == 'master') {
