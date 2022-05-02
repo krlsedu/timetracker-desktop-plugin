@@ -78,7 +78,6 @@ public class ApplicationDetailService {
                     if (activityDetail.equals(aplicationDetailFromChrome.getActivityDetail())) {
                         aplicationDetail.setPluginName(aplicationDetailFromChrome.getPluginName());
                         aplicationDetail.setUrl(aplicationDetailFromChrome.getUrl());
-                        aplicationDetailChrome = null;
                     }
                 }
             }
