@@ -31,6 +31,13 @@ public class ApplicationDetailService {
             if (aplicationDetail != null) {
                 aplicationDetail.setDateEnd(new Date());
                 aplicationDetail.setTimeSpentMillis(aplicationDetail.getDateEnd().getTime() - aplicationDetail.getDateIni().getTime());
+
+                if (aplicationDetail.getTimeSpentMillis() > Core.QUEUE_TIMEOUT_SECONDS * 1000) {
+                    long timeEnd = aplicationDetail.getDateIni().getTime() + Core.QUEUE_TIMEOUT_SECONDS * 1000;
+                    aplicationDetail.setDateEnd(new Date(timeEnd));
+                    aplicationDetail.setTimeSpentMillis(aplicationDetail.getDateEnd().getTime() - aplicationDetail.getDateIni().getTime());
+                }
+
                 aplicationDetail.setOsName(SystemInfo.getOsName());
                 aplicationDetail.setHostName(SystemInfo.getHostName());
                 Core.appendHeartbeat(aplicationDetail);
