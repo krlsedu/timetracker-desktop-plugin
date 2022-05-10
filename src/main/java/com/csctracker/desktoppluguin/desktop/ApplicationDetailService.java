@@ -32,8 +32,8 @@ public class ApplicationDetailService {
                 aplicationDetail.setDateEnd(new Date());
                 aplicationDetail.setTimeSpentMillis(aplicationDetail.getDateEnd().getTime() - aplicationDetail.getDateIni().getTime());
 
-                if (aplicationDetail.getTimeSpentMillis() > Core.QUEUE_TIMEOUT_SECONDS * 1000) {
-                    long timeEnd = aplicationDetail.getDateIni().getTime() + Core.QUEUE_TIMEOUT_SECONDS * 1000;
+                if (aplicationDetail.getTimeSpentMillis() > ((Core.QUEUE_TIMEOUT_SECONDS + 1) * 1000)) {
+                    long timeEnd = aplicationDetail.getDateIni().getTime() + ((Core.QUEUE_TIMEOUT_SECONDS + 1) * 1000);
                     aplicationDetail.setDateEnd(new Date(timeEnd));
                     aplicationDetail.setTimeSpentMillis(aplicationDetail.getDateEnd().getTime() - aplicationDetail.getDateIni().getTime());
                 }
