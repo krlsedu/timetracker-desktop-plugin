@@ -1,5 +1,6 @@
 package com.csctracker.desktoppluguin.desktop;
 
+import com.csctracker.desktoppluguin.core.ConfigFile;
 import com.csctracker.desktoppluguin.core.Core;
 import com.csctracker.desktoppluguin.core.model.ApplicationDetail;
 import com.sun.jna.Native;
@@ -11,6 +12,7 @@ import java.util.Date;
 @Slf4j
 public class ApplicationDetailService {
     private static final int MAX_TITLE_LENGTH = 1024;
+    private static int HEARTBEAT_MAX_TIME_SECONDS = 10;
     private static final SystemInfo systemStat = new SystemInfo();
     private static long lastTimeDetailChange = new Date().getTime();
 
@@ -32,8 +34,8 @@ public class ApplicationDetailService {
                 aplicationDetail.setDateEnd(new Date());
                 aplicationDetail.setTimeSpentMillis(aplicationDetail.getDateEnd().getTime() - aplicationDetail.getDateIni().getTime());
 
-                if (aplicationDetail.getTimeSpentMillis() > ((Core.QUEUE_TIMEOUT_SECONDS + 1) * 1000)) {
-                    long timeEnd = aplicationDetail.getDateIni().getTime() + ((Core.QUEUE_TIMEOUT_SECONDS + 1) * 1000);
+                if (aplicationDetail.getTimeSpentMillis() > ((HEARTBEAT_MAX_TIME_SECONDS + 1) * 1000L)) {
+                    long timeEnd = aplicationDetail.getDateIni().getTime() + ((HEARTBEAT_MAX_TIME_SECONDS + 1) * 1000L);
                     aplicationDetail.setDateEnd(new Date(timeEnd));
                     aplicationDetail.setTimeSpentMillis(aplicationDetail.getDateEnd().getTime() - aplicationDetail.getDateIni().getTime());
                 }
@@ -67,8 +69,9 @@ public class ApplicationDetailService {
     }
 
     private static boolean forceAttAppDetails() {
+        HEARTBEAT_MAX_TIME_SECONDS = ConfigFile.heartbeatMaxTimeSeconds();
         long timeSpent = new Date().getTime() - lastTimeDetailChange;
-        return timeSpent > (Core.QUEUE_TIMEOUT_SECONDS * 1000);
+        return timeSpent > (HEARTBEAT_MAX_TIME_SECONDS * 1000L);
     }
 
     public static void clearAplicationDetail() {

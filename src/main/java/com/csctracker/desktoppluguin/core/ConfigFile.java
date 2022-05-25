@@ -167,6 +167,14 @@ public class ConfigFile {
         }
     }
 
+    public static Integer heartbeatMaxTimeSeconds() {
+        try {
+            return Integer.parseInt(ConfigFile.get("settings", "heartbeatMaxTimeSeconds"));
+        } catch (NumberFormatException e) {
+            return 10;
+        }
+    }
+
     public static String urlCscTracker() {
 //        return "http://45.79.41.108:8090/usage-info";
         return ConfigFile.get("settings", "urlCscTracker");
