@@ -47,7 +47,7 @@ pipeline {
                 echo "Compressing artifacts into one file"
                 sh 'zip -r csctracker-desktop-plugin.zip target'
 
-                withCredentials([usernamePassword(credentialsId: 'github_global', passwordVariable: 'password', usernameVariable: 'user')]) {
+                withCredentials([usernamePassword(credentialsId: 'github', passwordVariable: 'password', usernameVariable: 'user')]) {
                     echo "Creating a new release in github"
                     sh 'github-release release --user krlsedu --security-token ' + env.password + ' --repo timetracker-desktop-plugin --tag ' + TAG + ' --name "' + TAG + '"' + PRE_RELEASE
 
