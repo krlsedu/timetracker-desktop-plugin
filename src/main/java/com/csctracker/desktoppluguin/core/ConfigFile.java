@@ -180,8 +180,28 @@ public class ConfigFile {
         return ConfigFile.get("settings", "urlCscTracker");
     }
 
+    public static String urlNotifySync() {
+        return ConfigFile.get("settings", "urlNotifySync");
+    }
+
     public static String tokenCscTracker() {
         return ConfigFile.get("settings", "tokenCscTracker");
+    }
+
+    public static String dbNotificationsName() {
+        return ConfigFile.get("settings", "dbNotificationsName");
+    }
+
+    public static Long lastArrivalTime() {
+        try {
+            return Long.parseLong(ConfigFile.get("settings", "lastArrivalTime"));
+        } catch (NumberFormatException e) {
+            return 0L;
+        }
+    }
+
+    public static void lastArrivalTime(Long lastArrivalTime) {
+        ConfigFile.set("settings", "lastArrivalTime", lastArrivalTime.toString());
     }
 
     public static boolean isWindows() {

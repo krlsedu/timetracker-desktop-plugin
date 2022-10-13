@@ -1,8 +1,7 @@
 package com.csctracker.desktoppluguin;
 
 
-import com.csctracker.desktoppluguin.desktop.Core;
-import com.csctracker.desktoppluguin.desktop.Tray;
+import com.csctracker.desktoppluguin.core.NotificationSync;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -18,5 +17,6 @@ public class CscTrackerDesktopPlugin {
             Core.restart();
         });
         SpringApplication.run(CscTrackerDesktopPlugin.class, args);
+        NotificationSync.notificationTracker();
     }
 }

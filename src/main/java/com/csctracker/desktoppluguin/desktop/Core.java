@@ -8,7 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class Core {
 
-	private static final int WAIT_TIME = 100;
+	public static final int WAIT_TIME = 100;
 	private static boolean ativo = true;
 
 	private Core() {
