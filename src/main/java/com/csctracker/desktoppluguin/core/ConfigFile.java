@@ -19,7 +19,7 @@ public class ConfigFile {
     private static String getConfigFilePath() {
         ConfigFile.cscTrackerCachedConfigFile = new File(getResourcesLocation(), ConfigFile.TIMETRACKER_CFG).getAbsolutePath();
         if (Core.isDebug()) {
-            log.debug("Using $HOME for config folder: " + ConfigFile.cscTrackerCachedConfigFile);
+//            log.debug("Using $HOME for config folder: " + ConfigFile.cscTrackerCachedConfigFile);
         }
         return ConfigFile.cscTrackerCachedConfigFile;
     }
@@ -166,6 +166,15 @@ public class ConfigFile {
             return null;
         }
     }
+
+    public static String userProxy() {
+        return ConfigFile.get("settings", "userProxy");
+    }
+
+    public static String passwordProxy() {
+        return ConfigFile.get("settings", "passwordProxy");
+    }
+
 
     public static Integer heartbeatMaxTimeSeconds() {
         try {

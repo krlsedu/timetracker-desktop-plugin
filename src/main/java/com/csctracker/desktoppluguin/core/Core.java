@@ -2,12 +2,10 @@ package com.csctracker.desktoppluguin.core;
 
 import com.csctracker.desktoppluguin.core.model.ApplicationDetail;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mashape.unirest.http.Unirest;
+import kong.unirest.HttpRequestWithBody;
+import kong.unirest.Unirest;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.http.HttpHost;
 
-import java.io.FileNotFoundException;
-import java.io.PrintStream;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -55,7 +53,7 @@ public class Core {
             try {
                 SqlLitle.getErrors(resincErrors);
             } catch (SQLException e) {
-                log.warn(e.getMessage());
+                log.warn("58", e.getMessage());
             }
 
             while (true) {
@@ -93,9 +91,9 @@ public class Core {
             try {
                 SqlLitle.salva(jsonString);
             } catch (Exception ex) {
-                log.warn(ex.getMessage());
+                log.warn("96", ex.getMessage());
             }
-            log.warn(e.getMessage());
+            log.warn("98", e.getMessage());
         }
     }
 
@@ -106,15 +104,16 @@ public class Core {
 
                 var urlProxy = ConfigFile.urlProxy();
                 var port = ConfigFile.portProxy();
+                HttpRequestWithBody post = Unirest.post(ConfigFile.urlCscTracker());
                 if (urlProxy != null && port != null) {
-                    Unirest.setProxy(new HttpHost(urlProxy, port));
+                    post.proxy(urlProxy, port);
                 }
-                var response = Unirest.post(ConfigFile.urlCscTracker())
+                var response = post
                         .header("Content-Type", "application/json")
                         .header("Authorization", "Bearer " + ConfigFile.tokenCscTracker())
                         .body(jsonString)
                         .asString();
-                if (response.getStatus() != 201) {
+                if (response.getStatus() < 200 || response.getStatus() > 299) {
                     SqlLitle.salva(jsonString);
                     log.warn(response.getBody());
                 }
@@ -122,12 +121,13 @@ public class Core {
                 SqlLitle.salva(jsonString);
             }
         } catch (Exception e) {
+            e.printStackTrace();
             try {
                 SqlLitle.salva(jsonString);
             } catch (Exception ex) {
-                log.warn(ex.getMessage());
+                log.warn("129", ex.getMessage());
             }
-            log.warn(e.getMessage());
+            log.warn("131", e.getMessage());
         }
     }
 

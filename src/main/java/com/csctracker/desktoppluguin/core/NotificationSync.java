@@ -3,17 +3,15 @@ package com.csctracker.desktoppluguin.core;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import kong.unirest.HttpRequestWithBody;
+import kong.unirest.Unirest;
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.BufferedWriter;
-import java.io.OutputStreamWriter;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import static com.csctracker.desktoppluguin.desktop.Core.WAIT_TIME;
 import static com.csctracker.desktoppluguin.desktop.Core.isAtivo;
@@ -22,6 +20,7 @@ import static com.csctracker.desktoppluguin.desktop.Core.isAtivo;
 public class NotificationSync {
 
     private static final String DB_NAME = ConfigFile.dbNotificationsName();
+    private static final ConcurrentLinkedQueue<String> resincErrors = new ConcurrentLinkedQueue<>();
 
 
     public static List<Notification> getNotifications(Long lastArrivalTime) throws SQLException, ClassNotFoundException {
@@ -41,6 +40,8 @@ public class NotificationSync {
     }
 
     public static void notificationTracker() {
+        Thread thread = new Thread(() -> resincErrors());
+        thread.start();
         Long lastArrivalTime = ConfigFile.lastArrivalTime();
         do {
             var xmlMapper = new XmlMapper();
@@ -52,64 +53,86 @@ public class NotificationSync {
                     var node = xmlMapper.readTree(notification.getText());
                     lastArrivalTime = notification.getArrivalTime();
                     var json = jsonMapper.writeValueAsString(node);
-                    log.info(json);
-                    send(json, "message");
+                    sendJson(json);
                 }
-                ConfigFile.lastArrivalTime(lastArrivalTime);
             } catch (Exception e) {
                 Thread.currentThread().interrupt();
                 log.info(e.getMessage());
                 break;
             }
+            ConfigFile.lastArrivalTime(lastArrivalTime);
+            resincErrors();
         } while (isAtivo());
         if (com.csctracker.desktoppluguin.core.Core.isDebug() && !isAtivo()) {
             log.info("Stooped");
         }
     }
 
-    public static void send(String json, String endpoint) {
-        System.out.println(json);
-        Thread thread = new Thread(() -> {
-            String jsonSend = json;
-            String uri = "";
-            if ("message".equals(endpoint)) {
-                Message message = new Message(json);
-                try {
-                    ObjectMapper objectMapper = new ObjectMapper();
-                    jsonSend = objectMapper.writeValueAsString(message);
-                } catch (JsonProcessingException e) {
-                    e.printStackTrace();
-                }
-                uri = ConfigFile.urlNotifySync();
-            }
-            HttpURLConnection connection = null;
+    private static void resincErrors() {
+        do {
             try {
-                URL url = new URL(uri);
-                connection = (HttpURLConnection) url.openConnection();
-                connection.setDoOutput(true);
-                connection.setRequestMethod("POST");
-                connection.setRequestProperty("Authorization", "Bearer " + ConfigFile.tokenCscTracker());
-                connection.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
-                connection.connect();
-
-                BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(connection.getOutputStream(), StandardCharsets.UTF_8));
-                bw.write(jsonSend);
-                bw.flush();
-                bw.close();
-
-                int response = connection.getResponseCode();
-                if (response != 201) {
-                    log.error("Response " + response);
+                Thread.sleep(WAIT_TIME * 10);
+                try {
+                    SqlLitle.getErrors(resincErrors, "notify-error");
+                } catch (SQLException e) {
+                    log.warn(e.getMessage());
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
-            } finally {
-                if (connection != null) {
-                    connection.disconnect();
+
+                while (true) {
+                    String jsonString = resincErrors.poll();
+                    if (jsonString == null) {
+                        return;
+                    }
+                    send(jsonString);
                 }
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
             }
-        });
-        thread.start();
+        } while (isAtivo());
+    }
+
+    private static void sendJson(String json) {
+        String jsonSend = json;
+        Message message = new Message(json);
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            jsonSend = objectMapper.writeValueAsString(message);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        send(jsonSend);
+    }
+
+    public static void send(String jsonSend) {
+
+        String url = ConfigFile.urlNotifySync();
+        try {
+            var urlProxy = ConfigFile.urlProxy();
+            var port = ConfigFile.portProxy();
+            HttpRequestWithBody post = Unirest.post(url);
+            if (urlProxy != null && port != null) {
+                post.proxy(urlProxy, port);
+            }
+            var response = post
+                    .header("Content-Type", "application/json")
+                    .header("Authorization", "Bearer " + ConfigFile.tokenCscTracker())
+                    .body(jsonSend).asString();
+            if (response.getStatus() < 200 || response.getStatus() > 299) {
+                SqlLitle.salva(jsonSend, "notify-error");
+                log.info("Error: não criado");
+                log.info(jsonSend);
+                log.info(response.toString());
+            }
+        } catch (Exception e) {
+            try {
+                SqlLitle.salva(jsonSend, "notify-error");
+            } catch (Exception ex) {
+                log.error(ex.getMessage());
+            }
+            log.info(jsonSend);
+            log.info(jsonSend);
+            log.error(e.getMessage());
+        }
     }
 
 }

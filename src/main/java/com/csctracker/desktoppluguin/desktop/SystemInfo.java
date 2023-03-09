@@ -24,6 +24,10 @@ public class SystemInfo {
 		return osName;
 	}
 
+	public static boolean isWindows() {
+		return getOsName().contains("Windows");
+	}
+
 	public static String getHostName() {
 		if (hostName == null) {
 			try {
@@ -41,7 +45,7 @@ public class SystemInfo {
 
 		int idleSec = Win32IdleTime.getIdleTimeMillisWin32() / 1000;
 		return idleSec < SECONDS_TO_IDLE ? State.ONLINE : State.IDLE;
-		
+
 	}
 
 	public boolean isChangedState() {

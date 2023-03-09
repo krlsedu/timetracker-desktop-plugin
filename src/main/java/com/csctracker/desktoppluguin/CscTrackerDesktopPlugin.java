@@ -3,6 +3,7 @@ package com.csctracker.desktoppluguin;
 
 import com.csctracker.desktoppluguin.core.NotificationSync;
 import com.csctracker.desktoppluguin.desktop.Core;
+import com.csctracker.desktoppluguin.desktop.SystemInfo;
 import com.csctracker.desktoppluguin.desktop.Tray;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -12,7 +13,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class CscTrackerDesktopPlugin {
 
     public static void main(String[] args) {
-        Tray.config();
+        if (SystemInfo.isWindows()) {
+            Tray.config();
+        }
         Core.start();
         Thread.setDefaultUncaughtExceptionHandler((t, e) -> {
             Tray.notifyError(e.getMessage());

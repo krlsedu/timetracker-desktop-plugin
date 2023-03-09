@@ -53,7 +53,52 @@ public class ApplicationDetailService {
                 aplicationDetail.setProcessName(User32DLL.getImageName(foregroundWindow));
                 try {
                     FileVersion.appDetails(aplicationDetail);
-                    aplicationDetail.setName(aplicationDetail.getName().replaceAll("s/\\x00//g", "").replaceAll("\u0000", ""));
+                    if (aplicationDetail.getName() != null) {
+                        aplicationDetail.setName(aplicationDetail.getName().replace("s/\\x00//g", "").replace("\u0000", ""));
+                    }
+                } catch (Exception e) {
+                    //
+                }
+                aplicationDetail.setActivityDetail(foregroundDeteail);
+                aplicationDetail.setDateIni(new Date());
+                lastTimeDetailChange = new Date().getTime();
+            } else {
+                aplicationDetail = null;
+            }
+        }
+        setChromeInfos(aplicationDetailChrome);
+        prevForegroundDetail = foregroundDeteail;
+    }
+
+    public static void generateApplicationDetailInfoLinux() {
+        String foregroundDeteail = Service.windowTitle();
+        if (!foregroundDeteail.equals(prevForegroundDetail) || systemStat.isChangedState() || forceAttAppDetails()) {
+            if (aplicationDetail != null) {
+                aplicationDetail.setDateEnd(new Date());
+                aplicationDetail.setTimeSpentMillis(aplicationDetail.getDateEnd().getTime() - aplicationDetail.getDateIni().getTime());
+
+                if (aplicationDetail.getTimeSpentMillis() > ((HEARTBEAT_MAX_TIME_SECONDS + 1) * 1000L)) {
+                    long timeEnd = aplicationDetail.getDateIni().getTime() + ((HEARTBEAT_MAX_TIME_SECONDS + 1) * 1000L);
+                    aplicationDetail.setDateEnd(new Date(timeEnd));
+                    aplicationDetail.setTimeSpentMillis(aplicationDetail.getDateEnd().getTime() - aplicationDetail.getDateIni().getTime());
+                }
+
+                aplicationDetail.setOsName(SystemInfo.getOsName());
+                aplicationDetail.setHostName(SystemInfo.getHostName());
+                Core.appendHeartbeat(aplicationDetail);
+                if (Core.isDebug()) {
+                    log.info(aplicationDetail.toString());
+                }
+            }
+            if (systemStat.isOnline()) {
+                aplicationDetail = new ApplicationDetail();
+                aplicationDetail.setPluginName("desktop");
+//                aplicationDetail.setProcessName(User32DLL.getImageName(foregroundWindow));
+                try {
+                    FileVersion.appDetails(aplicationDetail);
+                    if (aplicationDetail.getName() != null) {
+                        aplicationDetail.setName(aplicationDetail.getName().replace("s/\\x00//g", "").replace("\u0000", ""));
+                    }
                 } catch (Exception e) {
                     //
                 }

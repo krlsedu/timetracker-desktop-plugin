@@ -6,6 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class SqlLitle {
@@ -18,6 +19,7 @@ public class SqlLitle {
         Statement statement = conn.createStatement();
         statement.execute("CREATE TABLE error( json text)");
         statement.execute("CREATE TABLE sync( url text)");
+        statement.execute("CREATE TABLE notify_error( json text)");
         conn.close();
     }
 
@@ -56,9 +58,18 @@ public class SqlLitle {
     }
 
     public static void salva(String json) throws Exception {
+        salva(json, "usage-info");
+    }
+
+    public static void salva(String json, String type) throws Exception {
         String url = getUrl();
         Connection conn = DriverManager.getConnection(url);
-        PreparedStatement preparedStatement = conn.prepareStatement("insert into error (json) values (?)");
+        PreparedStatement preparedStatement = null;
+        if (Objects.equals(type, "notify-error")) {
+            preparedStatement = conn.prepareStatement("insert into notify_error (json) values (?)");
+        } else {
+            preparedStatement = conn.prepareStatement("insert into error (json) values (?)");
+        }
         preparedStatement.setString(1, json);
         preparedStatement.execute();
         conn.close();
@@ -141,15 +152,30 @@ public class SqlLitle {
     }
 
     public static void getErrors(ConcurrentLinkedQueue<String> errors) throws SQLException {
+        getErrors(errors, "usage-info");
+    }
+
+    public static void getErrors(ConcurrentLinkedQueue<String> errors, String type) throws SQLException {
         String url = getUrl();
         Connection conn = DriverManager.getConnection(url);
-        PreparedStatement preparedStatement = conn.prepareStatement("select * from error");
+        PreparedStatement preparedStatement = null;
+        if (Objects.equals(type, "notify-error")) {
+            preparedStatement = conn.prepareStatement("select * from notify_error");
+        } else {
+            preparedStatement = conn.prepareStatement("select * from error");
+        }
 
         ResultSet resultSet = preparedStatement.executeQuery();
         while (resultSet.next()) {
             errors.add(resultSet.getString(1));
         }
-        preparedStatement = conn.prepareStatement("delete from error");
+
+        if (Objects.equals(type, "notify-error")) {
+            preparedStatement = conn.prepareStatement("delete from notify_error");
+        } else {
+            preparedStatement = conn.prepareStatement("delete from error");
+        }
+
         preparedStatement.execute();
         conn.close();
     }
