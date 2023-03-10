@@ -49,6 +49,9 @@ public class SystemInfo {
 	}
 
 	public boolean isChangedState() {
+		if (!SystemInfo.isWindows()) {
+			return false;
+		}
 
 		State newState = getState();
 
@@ -63,6 +66,9 @@ public class SystemInfo {
 	}
 
 	public boolean isOnline(){
+		if (!SystemInfo.isWindows()) {
+			return true;
+		}
 		return getState().equals(State.ONLINE);
 	}
 

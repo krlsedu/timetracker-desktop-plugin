@@ -83,7 +83,7 @@ public class ApplicationDetailService {
                     aplicationDetail.setTimeSpentMillis(aplicationDetail.getDateEnd().getTime() - aplicationDetail.getDateIni().getTime());
                 }
 
-                aplicationDetail.setOsName(SystemInfo.getOsName());
+                aplicationDetail.setOsName(Service.distroName());
                 aplicationDetail.setHostName(SystemInfo.getHostName());
                 Core.appendHeartbeat(aplicationDetail);
                 if (Core.isDebug()) {
@@ -93,9 +93,9 @@ public class ApplicationDetailService {
             if (systemStat.isOnline()) {
                 aplicationDetail = new ApplicationDetail();
                 aplicationDetail.setPluginName("desktop");
-//                aplicationDetail.setProcessName(User32DLL.getImageName(foregroundWindow));
+                aplicationDetail.setProcessName(Service.procName());
                 try {
-                    FileVersion.appDetails(aplicationDetail);
+                    aplicationDetail.setName(Service.appName());
                     if (aplicationDetail.getName() != null) {
                         aplicationDetail.setName(aplicationDetail.getName().replace("s/\\x00//g", "").replace("\u0000", ""));
                     }
