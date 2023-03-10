@@ -8,7 +8,7 @@ import java.net.UnknownHostException;
 
 @Slf4j
 public class SystemInfo {
-	private static final int SECONDS_TO_IDLE = 30;
+	public static final int SECONDS_TO_IDLE = 30;
 
 	private static String osName = null;
 

@@ -32,25 +32,35 @@ public class Core {
         if (com.csctracker.desktoppluguin.core.Core.isDebug()) {
             log.info("Initiated");
         }
-        do {
-            try {
-                Thread.sleep(WAIT_TIME);
-
-                if (SystemInfo.isWindows()) {
+        if (!SystemInfo.isWindows()) {
+            var linuxSystemInfo = new LinuxSystemInfo();
+            linuxSystemInfo.start();
+            do {
+                try {
+                    Thread.sleep(WAIT_TIME);
+                    ApplicationDetailService.generateApplicationDetailInfoLinux(linuxSystemInfo);
+                } catch (Exception e) {
+                    Thread.currentThread().interrupt();
+                    error(e);
+                    break;
+                }
+            } while (isAtivo());
+        } else {
+            do {
+                try {
+                    Thread.sleep(WAIT_TIME);
                     WinDef.HWND foregroundWindow = User32.INSTANCE.GetForegroundWindow();
 
                     if (foregroundWindow != null) {
                         ApplicationDetailService.generateApplicationDetailInfo(foregroundWindow);
                     }
-                } else {
-                    ApplicationDetailService.generateApplicationDetailInfoLinux();
+                } catch (Exception e) {
+                    Thread.currentThread().interrupt();
+                    error(e);
+                    break;
                 }
-            } catch (Exception e) {
-                Thread.currentThread().interrupt();
-                error(e);
-                break;
-            }
-        } while (isAtivo());
+            } while (isAtivo());
+        }
         if (com.csctracker.desktoppluguin.core.Core.isDebug() && !isAtivo()) {
             log.info("Stooped");
         }

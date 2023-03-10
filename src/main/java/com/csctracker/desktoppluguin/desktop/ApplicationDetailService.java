@@ -70,9 +70,9 @@ public class ApplicationDetailService {
         prevForegroundDetail = foregroundDeteail;
     }
 
-    public static void generateApplicationDetailInfoLinux() {
+    public static void generateApplicationDetailInfoLinux(LinuxSystemInfo linuxSystemInfo) {
         String foregroundDeteail = Service.windowTitle();
-        if (!foregroundDeteail.equals(prevForegroundDetail) || systemStat.isChangedState() || forceAttAppDetails()) {
+        if (!foregroundDeteail.equals(prevForegroundDetail) || linuxSystemInfo.isChangedState() || forceAttAppDetails()) {
             if (aplicationDetail != null) {
                 aplicationDetail.setDateEnd(new Date());
                 aplicationDetail.setTimeSpentMillis(aplicationDetail.getDateEnd().getTime() - aplicationDetail.getDateIni().getTime());
@@ -90,7 +90,7 @@ public class ApplicationDetailService {
                     log.info(aplicationDetail.toString());
                 }
             }
-            if (systemStat.isOnline()) {
+            if (linuxSystemInfo.isOnline()) {
                 aplicationDetail = new ApplicationDetail();
                 aplicationDetail.setPluginName("desktop");
                 aplicationDetail.setProcessName(Service.procName());
