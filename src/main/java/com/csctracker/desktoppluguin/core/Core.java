@@ -147,7 +147,14 @@ public class Core {
     public static void setupDebugging() {
         String debug = ConfigFile.get("settings", "debug");
         Core.debug = debug != null && debug.trim().equals("true");
-
+        PrintStream fileStream = null;
+        try {
+            fileStream = new PrintStream(ConfigFile.getResourcesLocation() + "\\csctracker-desktop-plugin.log");
+            System.setOut(fileStream);
+            System.setErr(fileStream);
+        } catch (FileNotFoundException e) {
+            log.error(e.getMessage());
+        }
     }
 
     public static boolean isDebug() {
