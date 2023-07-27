@@ -58,7 +58,7 @@ pipeline {
 
                     script {
                         result = sh (script: "git log -1 | grep 'Triggered Build'", returnStatus: true)
-                        echo result
+                        echo 'result '+ result
                         if (env.BRANCH_NAME == 'master' && result != 0) {
                             sh "git add ."
                             sh "git config --global user.email 'krlsedu@gmail.com'"
