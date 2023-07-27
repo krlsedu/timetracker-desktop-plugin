@@ -4,7 +4,6 @@ pipeline {
     agent none
     stages {
         stage('Build') {
-
             agent any
             tools {
                 maven 'M3'
@@ -40,6 +39,7 @@ pipeline {
                         TAG = 'Alpha-' + VersionNumber(versionNumberString: '${BUILD_DATE_FORMATTED, "yyyyMMdd"}.${BUILDS_TODAY}.${BUILD_NUMBER}')
                     }
                 }
+
                 sh 'git pull origin master'
                 sh 'mvn versions:set versions:commit -DnewVersion=' + TAG
                 sh 'mvn clean install'
@@ -57,7 +57,9 @@ pipeline {
                     sh 'github-release upload --user krlsedu --security-token ' + env.password + ' --repo timetracker-desktop-plugin --tag ' + TAG + ' --name csctracker-desktop-plugin-"' + TAG + '.zip" --file csctracker-desktop-plugin.zip'
 
                     script {
-                        if (env.BRANCH_NAME == 'master') {
+                        result = sh (script: "git log -1 | grep 'Triggered Build'", returnStatus: true)
+                        echo result
+                        if (env.BRANCH_NAME == 'master' && result != 0) {
                             sh "git add ."
                             sh "git config --global user.email 'krlsedu@gmail.com'"
                             sh "git config --global user.name 'Carlos Eduardo Duarte Schwalm'"
