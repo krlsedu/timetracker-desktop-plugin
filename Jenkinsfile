@@ -81,7 +81,7 @@ pipeline {
                             sh 'git push https://krlsedu:${password}@github.com/krlsedu/timetracker-desktop-plugin.git HEAD:' + env.BRANCH_NAME
 
                             echo "Creating a new release in github"
-                            sh 'github-release release --user krlsedu --security-token ' + env.password + ' --repo timetracker-desktop-plugin --tag release-' + TAG + ' --name "' + TAG + '"' + PRE_RELEASE
+                            sh 'github-release release --user krlsedu --security-token ' + env.password + ' --repo timetracker-desktop-plugin --tag release-' + TAG + ' --name "release-' + TAG + '"' + PRE_RELEASE
 
                             echo "Uploading the artifacts into github"
                             sleep(time: 3, unit: "SECONDS")
