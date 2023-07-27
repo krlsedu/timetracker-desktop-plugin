@@ -52,7 +52,7 @@ pipeline {
                     if (env.BRANCH_NAME == 'master') {
                         echo 'Master'
                         PRE_RELEASE = ''
-                        VERSION = VersionNumber(versionNumberString: '${BUILD_YEAR,XX}.${BUILDS_THIS_YEAR,XXX}.${BUILDS_TODAY,XXX}')
+                        VERSION = VersionNumber(versionNumberString: '${BUILD_DATE_FORMATTED, "yy"}.${BUILDS_THIS_YEAR,XXX}.${BUILDS_TODAY,XXX}')
                         TAG = 'Release-' + VERSION
                     } else {
                         echo 'Dev'
