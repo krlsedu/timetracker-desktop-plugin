@@ -48,9 +48,9 @@ pipeline {
                 sh 'zip -r csctracker-desktop-plugin.zip target'
 
                 withCredentials([usernamePassword(credentialsId: 'gitHub', passwordVariable: 'password', usernameVariable: 'user')]) {
-                    result = sh(script: "git log -1 | grep 'Triggered Build'", returnStatus: true)
-                    echo 'result ' + result
                     script {
+                        result = sh(script: "git log -1 | grep 'Triggered Build'", returnStatus: true)
+                        echo 'result ' + result
                         if (env.BRANCH_NAME == 'master' && result != 0) {
                             echo "Creating a new release in github"
                             sh 'github-release release --user krlsedu --security-token ' + env.password + ' --repo timetracker-desktop-plugin --tag ' + TAG + ' --name "' + TAG + '"' + PRE_RELEASE
