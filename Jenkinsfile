@@ -1,5 +1,5 @@
 #!groovy
-env.RELEASE_COMMIT="1";
+env.RELEASE_COMMIT = "1";
 
 pipeline {
     agent none
@@ -7,9 +7,11 @@ pipeline {
         stage('CheckBranch') {
             agent any
             steps {
-                result = sh(script: "git log -1 | grep 'Triggered Build'", returnStatus: true)
-                echo 'result ' + result
-                env.RELEASE_COMMIT = result == 0 ? '0' : '1'
+                script {
+                    result = sh(script: "git log -1 | grep 'Triggered Build'", returnStatus: true)
+                    echo 'result ' + result
+                    env.RELEASE_COMMIT = result == 0 ? '0' : '1'
+                }
             }
         }
         stage('Build') {
