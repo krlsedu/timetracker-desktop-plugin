@@ -12,7 +12,7 @@
 
     <artifactId>CscTrackerDesktopPlugin</artifactId>
     <name>CscTrackerDesktopPlugin</name>
-    <version>20230726.1.6</version>
+    <version>20230726.2.7</version>
 
     <properties>
         <java.version>11</java.version>
