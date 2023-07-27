@@ -17,7 +17,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 
 
-@Getter
+
 @Slf4j
 public class Core {
     public static final int QUEUE_TIMEOUT_SECONDS = 10;
@@ -26,6 +26,7 @@ public class Core {
     private static final ScheduledExecutorService schedulerErrors = Executors.newScheduledThreadPool(1);
     private static final ConcurrentLinkedQueue<ApplicationDetail> heartbeatsQueue = new ConcurrentLinkedQueue<>();
     private static final ConcurrentLinkedQueue<String> resincErrors = new ConcurrentLinkedQueue<>();
+    @Getter
     private static boolean debug = true;
     private static ObjectMapper objectMapper = null;
     private static ScheduledFuture<?> scheduledFixture;
