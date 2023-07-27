@@ -52,12 +52,13 @@ pipeline {
                     if (env.BRANCH_NAME == 'master') {
                         echo 'Master'
                         PRE_RELEASE = ''
-                        TAG = VersionNumber(versionNumberString: '${BUILD_DATE_FORMATTED, "yyyyMMdd"}.${BUILDS_TODAY}.${BUILD_NUMBER}')
-//                        TAG = '20221013.1.1'
+                        VERSION = VersionNumber(versionNumberString: '${BUILD_YEAR,XXXX}.${BUILD_MONTH,XX}.${BUILDS_THIS_MONTH,XXX}')
+                        TAG = 'Release-' + VERSION
                     } else {
                         echo 'Dev'
                         PRE_RELEASE = ' --pre-release'
-                        TAG = 'Alpha-' + VersionNumber(versionNumberString: '${BUILD_DATE_FORMATTED, "yyyyMMdd"}.${BUILDS_TODAY}.${BUILD_NUMBER}')
+                        VERSION =  VersionNumber(versionNumberString: '${BUILD_DATE_FORMATTED, "yyyyMMdd"}.${BUILDS_TODAY}.${BUILD_NUMBER}')
+                        TAG = 'Alpha-' + VERSION
                     }
 
                     echo "removing old files"
@@ -66,27 +67,27 @@ pipeline {
 
                     echo "Creating a new tag"
                     sh 'git pull origin master'
-                    sh 'mvn versions:set versions:commit -DnewVersion=' + TAG
+                    sh 'mvn versions:set versions:commit -DnewVersion=' + VERSION
                     sh 'mvn clean install'
 
                     echo "Compressing artifacts into one file"
-                    sh 'zip -j csctracker-desktop-plugin.zip target/*.jar target/classes/*.*'
+                    sh 'zip -j csctrackerDesktopPlugin.zip target/*.jar target/classes/*.*'
 
                     withCredentials([usernamePassword(credentialsId: 'gitHub', passwordVariable: 'password', usernameVariable: 'user')]) {
                         script {
                             sh "git add ."
                             sh "git config --global user.email 'krlsedu@gmail.com'"
                             sh "git config --global user.name 'Carlos Eduardo Duarte Schwalm'"
-                            sh "git commit -m 'Triggered Build: " + TAG + "'"
+                            sh "git commit -m 'Triggered Build: " + VERSION + "'"
                             sh 'git push https://krlsedu:${password}@github.com/krlsedu/timetracker-desktop-plugin.git HEAD:' + env.BRANCH_NAME
 
                             echo "Creating a new release in github"
-                            sh 'github-release release --user krlsedu --security-token ' + env.password + ' --repo timetracker-desktop-plugin --tag release-' + TAG + ' --name "release-' + TAG + '"' + PRE_RELEASE
+                            sh 'github-release release --user krlsedu --security-token ' + env.password + ' --repo timetracker-desktop-plugin --tag ' + TAG + ' --name "' + TAG + '"' + PRE_RELEASE
 
                             echo "Uploading the artifacts into github"
                             sleep(time: 3, unit: "SECONDS")
 
-                            sh 'github-release upload --user krlsedu --security-token ' + env.password + ' --repo timetracker-desktop-plugin --tag release-' + TAG + ' --name csctracker-desktop-plugin-"' + TAG + '.zip" --file csctracker-desktop-plugin.zip'
+                            sh 'github-release upload --user krlsedu --security-token ' + env.password + ' --repo timetracker-desktop-plugin --tag ' + TAG + ' --name csctrackerDesktopPlugin-"' + TAG + '.zip" --file csctrackerDesktopPlugin.zip'
 
                         }
                     }
