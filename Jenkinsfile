@@ -4,12 +4,9 @@ pipeline {
     agent none
     parameters {
         string(name: 'RELEASE_COMMIT', defaultValue: '1', description: 'Branch to build')
-
-        script {
-            result = sh(script: "git log -1 | grep 'Triggered Build'", returnStatus: true)
-            echo 'result ' + result
-            parameters.RELEASE_COMMIT = result == 0 ? '0' : '1'
-        }
+        result = sh(script: "git log -1 | grep 'Triggered Build'", returnStatus: true)
+        echo 'result ' + result
+        parameters.RELEASE_COMMIT = result == 0 ? '0' : '1'
     }
     stages {
         stage('Build') {
