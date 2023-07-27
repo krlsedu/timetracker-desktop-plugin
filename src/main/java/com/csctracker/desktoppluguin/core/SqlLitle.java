@@ -42,6 +42,12 @@ public class SqlLitle {
             domain = "https://subdomain.csctracker.com";
         }
         statement.execute("insert into configs (name, value) values ('domain','" + domain + "')");
+
+        var debug = ConfigFile.get("settings", "debug");
+        if (debug == null) {
+            debug = "false";
+        }
+        statement.execute("insert into configs (name, value) values ('debug', '" + debug + "')");
         conn.close();
     }
 
