@@ -24,7 +24,7 @@ public class SqlLitle {
         statement.execute("insert into configs (name, value) values ('lastArrivalTime', '0')");
         statement.execute("insert into configs (name, value) values ('subdomainActive', '1')");
         statement.execute("insert into configs (name, value) values ('urlCscTracker', '/backend/usage-info')");
-        statement.execute("insert into configs (name, value) values ('dbNotificationsName', 'AppData\\Local\\Microsoft\\Windows\\Notifications\\wpndatabase.db')");
+        statement.execute("insert into configs (name, value) values ('dbNotificationsName', '\\AppData\\Local\\Microsoft\\Windows\\Notifications\\wpndatabase.db')");
         statement.execute("insert into configs (name, value) values ('urlNotifySync', '/notify-sync/message/')");
         statement.execute("insert into configs (name, value) values ('heartbeatMaxTimeSeconds', '60')");
 
