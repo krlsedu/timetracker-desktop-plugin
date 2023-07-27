@@ -42,6 +42,11 @@ pipeline {
                             TAG = 'Alpha-' + VersionNumber(versionNumberString: '${BUILD_DATE_FORMATTED, "yyyyMMdd"}.${BUILDS_TODAY}.${BUILD_NUMBER}')
                         }
 
+                        echo "removing old files"
+                        sh 'rm -rf target'
+                        sh 'rm -rf csctracker-desktop-plugin.zip'
+
+                        echo "Creating a new tag"
                         sh 'git pull origin master'
                         sh 'mvn versions:set versions:commit -DnewVersion=' + TAG
                         sh 'mvn clean install'
