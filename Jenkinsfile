@@ -48,18 +48,18 @@ pipeline {
                 sh 'zip -r csctracker-desktop-plugin.zip target'
 
                 withCredentials([usernamePassword(credentialsId: 'gitHub', passwordVariable: 'password', usernameVariable: 'user')]) {
-                    echo "Creating a new release in github"
-                    sh 'github-release release --user krlsedu --security-token ' + env.password + ' --repo timetracker-desktop-plugin --tag ' + TAG + ' --name "' + TAG + '"' + PRE_RELEASE
-
-                    echo "Uploading the artifacts into github"
-                    sleep(time: 3, unit: "SECONDS")
-
-                    sh 'github-release upload --user krlsedu --security-token ' + env.password + ' --repo timetracker-desktop-plugin --tag ' + TAG + ' --name csctracker-desktop-plugin-"' + TAG + '.zip" --file csctracker-desktop-plugin.zip'
-
+                    result = sh(script: "git log -1 | grep 'Triggered Build'", returnStatus: true)
+                    echo 'result ' + result
                     script {
-                        result = sh (script: "git log -1 | grep 'Triggered Build'", returnStatus: true)
-                        echo 'result '+ result
                         if (env.BRANCH_NAME == 'master' && result != 0) {
+                            echo "Creating a new release in github"
+                            sh 'github-release release --user krlsedu --security-token ' + env.password + ' --repo timetracker-desktop-plugin --tag ' + TAG + ' --name "' + TAG + '"' + PRE_RELEASE
+
+                            echo "Uploading the artifacts into github"
+                            sleep(time: 3, unit: "SECONDS")
+
+                            sh 'github-release upload --user krlsedu --security-token ' + env.password + ' --repo timetracker-desktop-plugin --tag ' + TAG + ' --name csctracker-desktop-plugin-"' + TAG + '.zip" --file csctracker-desktop-plugin.zip'
+
                             sh "git add ."
                             sh "git config --global user.email 'krlsedu@gmail.com'"
                             sh "git config --global user.name 'Carlos Eduardo Duarte Schwalm'"
