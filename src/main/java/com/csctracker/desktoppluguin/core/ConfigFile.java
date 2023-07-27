@@ -24,6 +24,17 @@ public class ConfigFile {
         return ConfigFile.cscTrackerCachedConfigFile;
     }
 
+    public static String getUserFolderLocation() {
+
+        if (ConfigFile.isWindows()) {
+            File windowsHome = new File(System.getenv("USERPROFILE"));
+            return windowsHome.getAbsolutePath();
+        }
+        File userHomeDir = new File(System.getProperty("user.home"));
+        return userHomeDir.getAbsolutePath();
+
+    }
+
     public static String getResourcesLocation() {
         if (resourcesLocation != null) return resourcesLocation;
 
@@ -230,7 +241,7 @@ public class ConfigFile {
     }
 
     public static String dbNotificationsName() {
-        return getResourcesLocation() + SqlLitle.getConfig("dbNotificationsName");
+        return getUserFolderLocation() + SqlLitle.getConfig("dbNotificationsName");
     }
 
     public static Long lastArrivalTime() {
