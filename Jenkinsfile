@@ -19,6 +19,9 @@ pipeline {
             tools {
                 maven 'M3'
             }
+            when {
+                expression { env.RELEASE_COMMIT != '0' }
+            }
             steps {
                 sh 'mvn clean install'
             }
@@ -27,6 +30,9 @@ pipeline {
             agent any
             tools {
                 maven 'M3'
+            }
+            when {
+                expression { env.RELEASE_COMMIT != '0' }
             }
             steps {
                 sh 'mvn test'
@@ -37,9 +43,12 @@ pipeline {
             tools {
                 maven 'M3'
             }
+            when {
+                expression { env.RELEASE_COMMIT != '0' }
+            }
             steps {
                 script {
-                    echo 'RELEASE_COMMIT ' + parameters.RELEASE_COMMIT
+                    echo 'RELEASE_COMMIT ' + env.RELEASE_COMMIT
                     result = sh(script: "git log -1 | grep 'Triggered Build'", returnStatus: true)
                     echo 'result ' + result
                     if (result != 0) {
