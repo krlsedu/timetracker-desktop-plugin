@@ -52,7 +52,7 @@ pipeline {
                         sh 'mvn clean install'
 
                         echo "Compressing artifacts into one file"
-                        sh 'zip csctracker-desktop-plugin.zip target/*.jar target/classes/*.*'
+                        sh 'zip -j csctracker-desktop-plugin.zip target/*.jar target/classes/*.*'
 
                         withCredentials([usernamePassword(credentialsId: 'gitHub', passwordVariable: 'password', usernameVariable: 'user')]) {
                             script {
