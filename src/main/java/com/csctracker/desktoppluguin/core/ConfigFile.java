@@ -178,39 +178,71 @@ public class ConfigFile {
 
     public static Integer heartbeatMaxTimeSeconds() {
         try {
-            return Integer.parseInt(ConfigFile.get("settings", "heartbeatMaxTimeSeconds"));
+            return Integer.parseInt(SqlLitle.getConfig("heartbeatMaxTimeSeconds"));
         } catch (NumberFormatException e) {
             return 10;
         }
     }
 
     public static String urlCscTracker() {
-//        return "http://45.79.41.108:8090/usage-info";
-        return ConfigFile.get("settings", "urlCscTracker");
+        return getDomain() + SqlLitle.getConfig("urlCscTracker");
+    }
+
+    public static String getDomain() {
+        var domain = SqlLitle.getConfig("domain");
+        domain = domain.replace("subdomain", getSubDomain());
+        return domain;
+    }
+
+    public static void changeSubDomain() {
+        var posicao = SqlLitle.getConfig("subdomainActive");
+        if (posicao == null) {
+            posicao = "1";
+        }
+        int pos = Integer.parseInt(posicao);
+        var subDomainsSt = SqlLitle.getConfig("subdomains");
+        var subDomains = subDomainsSt.split(",");
+        if (pos > subDomains.length) {
+            pos = 1;
+        } else {
+            pos++;
+        }
+        SqlLitle.saveConfig("subdomainActive", String.valueOf(pos));
+    }
+
+    public static String getSubDomain() {
+        var posicao = SqlLitle.getConfig("subdomainActive");
+        int pos = Integer.parseInt(posicao);
+        var subDomainsSt = SqlLitle.getConfig("subdomains");
+        var subDomains = subDomainsSt.split(",");
+        if (pos > subDomains.length) {
+            pos = 1;
+        }
+        return subDomains[pos - 1];
     }
 
     public static String urlNotifySync() {
-        return ConfigFile.get("settings", "urlNotifySync");
+        return getDomain() + SqlLitle.getConfig("urlNotifySync");
     }
 
     public static String tokenCscTracker() {
-        return ConfigFile.get("settings", "tokenCscTracker");
+        return SqlLitle.getConfig("tokenCscTracker");
     }
 
     public static String dbNotificationsName() {
-        return ConfigFile.get("settings", "dbNotificationsName");
+        return getResourcesLocation() + SqlLitle.getConfig("dbNotificationsName");
     }
 
     public static Long lastArrivalTime() {
         try {
-            return Long.parseLong(ConfigFile.get("settings", "lastArrivalTime"));
+            return Long.parseLong(SqlLitle.getConfig("lastArrivalTime"));
         } catch (NumberFormatException e) {
             return 0L;
         }
     }
 
     public static void lastArrivalTime(Long lastArrivalTime) {
-        ConfigFile.set("settings", "lastArrivalTime", lastArrivalTime.toString());
+        SqlLitle.saveConfig("lastArrivalTime", lastArrivalTime.toString());
     }
 
     public static boolean isWindows() {

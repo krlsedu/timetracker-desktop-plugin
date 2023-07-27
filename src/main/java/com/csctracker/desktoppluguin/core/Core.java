@@ -2,12 +2,10 @@ package com.csctracker.desktoppluguin.core;
 
 import com.csctracker.desktoppluguin.core.model.ApplicationDetail;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import kong.unirest.HttpRequestWithBody;
 import kong.unirest.Unirest;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.FileNotFoundException;
-import java.io.PrintStream;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +22,7 @@ public class Core {
     private static final ScheduledExecutorService schedulerErrors = Executors.newScheduledThreadPool(1);
     private static final ConcurrentLinkedQueue<ApplicationDetail> heartbeatsQueue = new ConcurrentLinkedQueue<>();
     private static final ConcurrentLinkedQueue<String> resincErrors = new ConcurrentLinkedQueue<>();
+    @Getter
     private static boolean debug = true;
     private static ObjectMapper objectMapper = null;
     private static ScheduledFuture<?> scheduledFixture;
@@ -106,7 +105,8 @@ public class Core {
 
                 var urlProxy = ConfigFile.urlProxy();
                 var port = ConfigFile.portProxy();
-                HttpRequestWithBody post = Unirest.post(ConfigFile.urlCscTracker());
+                var url = ConfigFile.urlCscTracker();
+                var post = Unirest.post(url);
                 if (urlProxy != null && port != null) {
                     post.proxy(urlProxy, port);
                 }
@@ -116,6 +116,7 @@ public class Core {
                         .body(jsonString)
                         .asString();
                 if (response.getStatus() < 200 || response.getStatus() > 299) {
+                    ConfigFile.changeSubDomain();
                     SqlLitle.salva(jsonString);
                     log.warn(response.getBody());
                 }
@@ -123,7 +124,7 @@ public class Core {
                 SqlLitle.salva(jsonString);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            ConfigFile.changeSubDomain();
             try {
                 SqlLitle.salva(jsonString);
             } catch (Exception ex) {
@@ -157,7 +158,4 @@ public class Core {
         }
     }
 
-    public static boolean isDebug() {
-        return debug;
-    }
 }

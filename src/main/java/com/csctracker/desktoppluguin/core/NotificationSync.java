@@ -118,19 +118,17 @@ public class NotificationSync {
                     .header("Authorization", "Bearer " + ConfigFile.tokenCscTracker())
                     .body(jsonSend).asString();
             if (response.getStatus() < 200 || response.getStatus() > 299) {
+                ConfigFile.changeSubDomain();
                 SqlLitle.salva(jsonSend, "notify-error");
-                log.info("Error: não criado");
-                log.info(jsonSend);
                 log.info(response.toString());
             }
         } catch (Exception e) {
+            ConfigFile.changeSubDomain();
             try {
                 SqlLitle.salva(jsonSend, "notify-error");
             } catch (Exception ex) {
                 log.error(ex.getMessage());
             }
-            log.info(jsonSend);
-            log.info(jsonSend);
             log.error(e.getMessage());
         }
     }

@@ -20,6 +20,28 @@ public class SqlLitle {
         statement.execute("CREATE TABLE error( json text)");
         statement.execute("CREATE TABLE sync( url text)");
         statement.execute("CREATE TABLE notify_error( json text)");
+        statement.execute("CREATE TABLE configs( name text PRIMARY KEY, value text)");
+        statement.execute("insert into configs (name, value) values ('lastArrivalTime', '0')");
+        statement.execute("insert into configs (name, value) values ('subdomainActive', '1')");
+        statement.execute("insert into configs (name, value) values ('urlCscTracker', '/backend/usage-info')");
+        statement.execute("insert into configs (name, value) values ('dbNotificationsName', 'AppData\\Local\\Microsoft\\Windows\\Notifications\\wpndatabase.db')");
+        statement.execute("insert into configs (name, value) values ('urlNotifySync', '/notify-sync/message/')");
+        statement.execute("insert into configs (name, value) values ('heartbeatMaxTimeSeconds', '60')");
+
+        var tokenCscTracker = ConfigFile.get("settings", "tokenCscTracker");
+        statement.execute("insert into configs (name, value) values ('tokenCscTracker', '" + tokenCscTracker + "')");
+
+        var subdomains = ConfigFile.get("settings", "subdomains");
+        if (subdomains == null) {
+            subdomains = "gtw,back";
+        }
+        statement.execute("insert into configs (name, value) values ('subdomains', '" + subdomains + "')");
+
+        var domain = ConfigFile.get("settings", "domain");
+        if (domain == null) {
+            domain = "https://subdomain.csctracker.com";
+        }
+        statement.execute("insert into configs (name, value) values ('domain','" + domain + "')");
         conn.close();
     }
 
@@ -193,5 +215,39 @@ public class SqlLitle {
         preparedStatement.execute();
         conn.close();
         return errors;
+    }
+
+    public static String getConfig(String name) {
+        try {
+            Connection conn = DriverManager.getConnection(getUrl());
+            PreparedStatement preparedStatement = conn.prepareStatement("select value from configs where name = ?");
+            preparedStatement.setString(1, name);
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+            var result = "0";
+            if (resultSet.next()) {
+                result = resultSet.getString(1);
+            }
+            conn.close();
+            return result;
+        } catch (Exception e) {
+        }
+        return "0";
+    }
+
+
+    public static void saveConfig(String name, String value) {
+        try {
+            Connection conn = DriverManager.getConnection(getUrl());
+            PreparedStatement preparedStatement = conn.prepareStatement("insert into configs (name, value) values (?, ?)" +
+                    " on conflict(name) do update set value = ?");
+            preparedStatement.setString(1, name);
+            preparedStatement.setString(2, value);
+            preparedStatement.setString(3, value);
+            preparedStatement.execute();
+            conn.close();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
     }
 }

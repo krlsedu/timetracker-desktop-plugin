@@ -13,19 +13,12 @@ pipeline {
             }
         }
         stage('Tests') {
-
-            script {
-                result = sh(script: "git log -1 | grep 'Triggered Build'", returnStatus: true)
-                echo 'result ' + result
-                if (result != 0) {
-                    agent any
-                    tools {
-                        maven 'M3'
-                    }
-                    steps {
-                        sh 'mvn test'
-                    }
-                }
+            agent any
+            tools {
+                maven 'M3'
+            }
+            steps {
+                sh 'mvn test'
             }
         }
         stage('Gerar versão') {
