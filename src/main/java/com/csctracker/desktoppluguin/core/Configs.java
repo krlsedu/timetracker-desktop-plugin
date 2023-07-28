@@ -8,25 +8,25 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 
 @Slf4j
-public class ConfigFile {
+public class Configs {
     private static final String TIMETRACKER_CFG = "cscTracker.cfg";
     private static String resourcesLocation = null;
     private static String cscTrackerCachedConfigFile = null;
 
-    private ConfigFile() {
+    private Configs() {
     }
 
     private static String getConfigFilePath() {
-        ConfigFile.cscTrackerCachedConfigFile = new File(getResourcesLocation(), ConfigFile.TIMETRACKER_CFG).getAbsolutePath();
-        if (Core.isDebug()) {
-//            log.debug("Using $HOME for config folder: " + ConfigFile.cscTrackerCachedConfigFile);
+        Configs.cscTrackerCachedConfigFile = new File(getResourcesLocation(), Configs.TIMETRACKER_CFG).getAbsolutePath();
+        if (Configs.isDebug()) {
+            log.debug("Using $HOME for config folder: " + Configs.cscTrackerCachedConfigFile);
         }
-        return ConfigFile.cscTrackerCachedConfigFile;
+        return Configs.cscTrackerCachedConfigFile;
     }
 
     public static String getUserFolderLocation() {
 
-        if (ConfigFile.isWindows()) {
+        if (Configs.isWindows()) {
             File windowsHome = new File(System.getenv("USERPROFILE"));
             return windowsHome.getAbsolutePath();
         }
@@ -38,7 +38,7 @@ public class ConfigFile {
     public static String getResourcesLocation() {
         if (resourcesLocation != null) return resourcesLocation;
 
-        if (ConfigFile.isWindows()) {
+        if (Configs.isWindows()) {
             File windowsHome = new File(System.getenv("USERPROFILE"));
             File resourcesFolder = new File(windowsHome, ".cscTracker");
             resourcesLocation = resourcesFolder.getAbsolutePath();
@@ -53,7 +53,7 @@ public class ConfigFile {
 
 
     public static String get(String section, String key) {
-        return get(section, key, ConfigFile.getConfigFilePath());
+        return get(section, key, Configs.getConfigFilePath());
     }
 
     public static String get(String section, String key, String file) {
@@ -92,7 +92,7 @@ public class ConfigFile {
     }
 
     public static void set(String section, String key, String val) {
-        String file = ConfigFile.getConfigFilePath();
+        String file = Configs.getConfigFilePath();
         StringBuilder contents = new StringBuilder();
         try {
             BufferedReader br = new BufferedReader(new FileReader(file));
@@ -162,28 +162,28 @@ public class ConfigFile {
     }
 
     public static boolean isCscTrackerOffline() {
-        String setting = ConfigFile.get("settings", "cscTrackerOffline");
+        String setting = Configs.get("settings", "cscTrackerOffline");
         return !(setting == null || setting.equals("false"));
     }
 
     public static String urlProxy() {
-        return ConfigFile.get("settings", "urlProxy");
+        return Configs.get("settings", "urlProxy");
     }
 
     public static Integer portProxy() {
         try {
-            return Integer.parseInt(ConfigFile.get("settings", "portProxy"));
+            return Integer.parseInt(Configs.get("settings", "portProxy"));
         } catch (NumberFormatException e) {
             return null;
         }
     }
 
     public static String userProxy() {
-        return ConfigFile.get("settings", "userProxy");
+        return Configs.get("settings", "userProxy");
     }
 
     public static String passwordProxy() {
-        return ConfigFile.get("settings", "passwordProxy");
+        return Configs.get("settings", "passwordProxy");
     }
 
 
@@ -259,5 +259,9 @@ public class ConfigFile {
 
     public static boolean isWindows() {
         return System.getProperty("os.name").contains("Windows");
+    }
+
+    public static boolean isDebug() {
+        return "true".equalsIgnoreCase(SqlLitle.getConfig("debug"));
     }
 }

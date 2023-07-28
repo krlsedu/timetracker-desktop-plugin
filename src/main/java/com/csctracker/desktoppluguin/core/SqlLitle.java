@@ -31,22 +31,22 @@ public class SqlLitle {
         statement.execute("insert into configs (name, value) values ('urlNotifySync', '/notify-sync/message/')");
         statement.execute("insert into configs (name, value) values ('heartbeatMaxTimeSeconds', '60')");
 
-        var tokenCscTracker = ConfigFile.get("settings", "tokenCscTracker");
+        var tokenCscTracker = Configs.get("settings", "tokenCscTracker");
         statement.execute("insert into configs (name, value) values ('tokenCscTracker', '" + tokenCscTracker + "')");
 
-        var subdomains = ConfigFile.get("settings", "subdomains");
+        var subdomains = Configs.get("settings", "subdomains");
         if (subdomains == null) {
             subdomains = "gtw,back";
         }
         statement.execute("insert into configs (name, value) values ('subdomains', '" + subdomains + "')");
 
-        var domain = ConfigFile.get("settings", "domain");
+        var domain = Configs.get("settings", "domain");
         if (domain == null) {
             domain = "https://subdomain.csctracker.com";
         }
         statement.execute("insert into configs (name, value) values ('domain','" + domain + "')");
 
-        var debug = ConfigFile.get("settings", "debug");
+        var debug = Configs.get("settings", "debug");
         if (debug == null) {
             debug = "false";
         }
@@ -55,7 +55,7 @@ public class SqlLitle {
     }
 
     private static String getUrl() throws SQLException {
-        String relativePath = ConfigFile.getResourcesLocation();
+        String relativePath = Configs.getResourcesLocation();
         File file = new File(relativePath + "\\" + DB_NAME);
         String url = "jdbc:sqlite:" + relativePath + "\\" + DB_NAME;
 
@@ -67,7 +67,7 @@ public class SqlLitle {
     }
 
     private static String getUrlBkp() throws SQLException {
-        String relativePath = ConfigFile.getResourcesLocation();
+        String relativePath = Configs.getResourcesLocation();
         String fileName = relativePath + "\\bkps\\.csctracker-desktop-plugin" + new SimpleDateFormat("-yyMMdd-hhmmss").format(new Date()) + ".db";
         File file = new File(fileName);
         String url = "jdbc:sqlite:" + fileName;
@@ -142,7 +142,7 @@ public class SqlLitle {
 
     private static void removeBkps() throws Exception {
 
-        String relativePath = ConfigFile.getResourcesLocation();
+        String relativePath = Configs.getResourcesLocation();
         File folder = new File(relativePath + "\\" + BKPS);
         File[] folderFiles = folder.listFiles();
         for (File file :
@@ -154,7 +154,7 @@ public class SqlLitle {
     }
 
     private static List<String> getUrlsBkps() throws SQLException {
-        String relativePath = ConfigFile.getResourcesLocation();
+        String relativePath = Configs.getResourcesLocation();
         File folder = new File(relativePath + "\\" + BKPS);
         File[] folderFiles = folder.listFiles();
         var urls = new ArrayList<String>();
@@ -169,13 +169,13 @@ public class SqlLitle {
     }
 
     public static boolean isUrlSync(String urlCheck) throws SQLException {
-        String url = getUrl();
-        Connection conn = DriverManager.getConnection(url);
-        PreparedStatement preparedStatement = conn.prepareStatement("select * from sync where url = ?");
+        var url = getUrl();
+        var conn = DriverManager.getConnection(url);
+        var preparedStatement = conn.prepareStatement("select * from sync where url = ?");
 
         preparedStatement.setString(1, urlCheck);
-        ResultSet resultSet = preparedStatement.executeQuery();
-        Boolean exist = resultSet.next();
+        var resultSet = preparedStatement.executeQuery();
+        var exist = resultSet.next();
         preparedStatement = conn.prepareStatement("delete from error");
         preparedStatement.execute();
         conn.close();
@@ -187,8 +187,8 @@ public class SqlLitle {
     }
 
     public static void getErrors(ConcurrentLinkedQueue<String> errors, String type) throws SQLException {
-        String url = getUrl();
-        Connection conn = DriverManager.getConnection(url);
+        var url = getUrl();
+        var conn = DriverManager.getConnection(url);
         PreparedStatement preparedStatement = null;
         if (Objects.equals(type, "notify-error")) {
             preparedStatement = conn.prepareStatement("select * from notify_error");
@@ -196,7 +196,7 @@ public class SqlLitle {
             preparedStatement = conn.prepareStatement("select * from error");
         }
 
-        ResultSet resultSet = preparedStatement.executeQuery();
+        var resultSet = preparedStatement.executeQuery();
         while (resultSet.next()) {
             errors.add(resultSet.getString(1));
         }
@@ -212,11 +212,11 @@ public class SqlLitle {
     }
 
     public static List<String> getErrors(String url) throws SQLException {
-        Connection conn = DriverManager.getConnection(url);
-        PreparedStatement preparedStatement = conn.prepareStatement("select * from error");
+        var conn = DriverManager.getConnection(url);
+        var preparedStatement = conn.prepareStatement("select * from error");
 
-        ResultSet resultSet = preparedStatement.executeQuery();
-        List<String> errors = new ArrayList<>();
+        var resultSet = preparedStatement.executeQuery();
+        var errors = new ArrayList<String>();
         while (resultSet.next()) {
             errors.add(resultSet.getString(1));
         }
@@ -228,17 +228,19 @@ public class SqlLitle {
 
     public static String getConfig(String name) {
         try {
-            Connection conn = DriverManager.getConnection(getUrl());
-            PreparedStatement preparedStatement = conn.prepareStatement("select value from configs where name = ?");
+            var conn = DriverManager.getConnection(getUrl());
+            var preparedStatement = conn.prepareStatement("select value from configs where name = ?");
             preparedStatement.setString(1, name);
 
-            ResultSet resultSet = preparedStatement.executeQuery();
+            var resultSet = preparedStatement.executeQuery();
             String result = null;
             if (resultSet.next()) {
                 result = resultSet.getString(1);
             }
             conn.close();
-            return result;
+            if (result != null) {
+                return result.trim();
+            }
         } catch (Exception e) {
             log.error(e.getMessage());
         }
@@ -248,8 +250,8 @@ public class SqlLitle {
 
     public static void saveConfig(String name, String value) {
         try {
-            Connection conn = DriverManager.getConnection(getUrl());
-            PreparedStatement preparedStatement = conn.prepareStatement("insert into configs (name, value) values (?, ?)" +
+            var conn = DriverManager.getConnection(getUrl());
+            var preparedStatement = conn.prepareStatement("insert into configs (name, value) values (?, ?)" +
                     " on conflict(name) do update set value = ?");
             preparedStatement.setString(1, name);
             preparedStatement.setString(2, value);

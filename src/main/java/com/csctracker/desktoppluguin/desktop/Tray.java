@@ -1,7 +1,7 @@
 
 package com.csctracker.desktoppluguin.desktop;
 
-import com.csctracker.desktoppluguin.core.ConfigFile;
+import com.csctracker.desktoppluguin.core.Configs;
 import com.csctracker.desktoppluguin.core.SqlLitle;
 import lombok.extern.slf4j.Slf4j;
 
@@ -27,7 +27,7 @@ public class Tray {
 
 		SystemTray tray = SystemTray.getSystemTray();
 
-		ImageIcon offIcon = new ImageIcon(ConfigFile.getResourcesLocation() + "\\csctracker-desktop-plugin.png");
+		ImageIcon offIcon = new ImageIcon(Configs.getResourcesLocation() + "\\csctracker-desktop-plugin.png");
 		PopupMenu popup = new PopupMenu();
 		icon = new TrayIcon(offIcon.getImage(), "CscTracker-desktop-plugin", popup);
 		icon.setImageAutoSize(true);

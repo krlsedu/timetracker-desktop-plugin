@@ -1,5 +1,6 @@
 package com.csctracker.desktoppluguin.desktop;
 
+import com.csctracker.desktoppluguin.core.Configs;
 import com.sun.jna.platform.win32.User32;
 import com.sun.jna.platform.win32.WinDef;
 import lombok.extern.slf4j.Slf4j;
@@ -29,7 +30,7 @@ public class Core {
     }
 
     private static void tracker() {
-        if (com.csctracker.desktoppluguin.core.Core.isDebug()) {
+        if (Configs.isDebug()) {
             log.info("Initiated");
         }
         if (!SystemInfo.isWindows()) {
@@ -61,7 +62,7 @@ public class Core {
                 }
             } while (isAtivo());
         }
-        if (com.csctracker.desktoppluguin.core.Core.isDebug() && !isAtivo()) {
+        if (Configs.isDebug() && !isAtivo()) {
             log.info("Stooped");
         }
     }

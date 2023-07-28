@@ -1,6 +1,6 @@
 package com.csctracker.desktoppluguin.desktop;
 
-import com.csctracker.desktoppluguin.core.ConfigFile;
+import com.csctracker.desktoppluguin.core.Configs;
 import com.csctracker.desktoppluguin.core.Core;
 import com.csctracker.desktoppluguin.core.model.ApplicationDetail;
 import com.sun.jna.Native;
@@ -43,7 +43,7 @@ public class ApplicationDetailService {
                 aplicationDetail.setOsName(SystemInfo.getOsName());
                 aplicationDetail.setHostName(SystemInfo.getHostName());
                 Core.appendHeartbeat(aplicationDetail);
-                if (Core.isDebug()) {
+                if (Configs.isDebug()) {
                     log.info(aplicationDetail.toString());
                 }
             }
@@ -86,7 +86,7 @@ public class ApplicationDetailService {
                 aplicationDetail.setOsName(Service.distroName());
                 aplicationDetail.setHostName(SystemInfo.getHostName());
                 Core.appendHeartbeat(aplicationDetail);
-                if (Core.isDebug()) {
+                if (Configs.isDebug()) {
                     log.info(aplicationDetail.toString());
                 }
             }
@@ -114,7 +114,7 @@ public class ApplicationDetailService {
     }
 
     private static boolean forceAttAppDetails() {
-        HEARTBEAT_MAX_TIME_SECONDS = ConfigFile.heartbeatMaxTimeSeconds();
+        HEARTBEAT_MAX_TIME_SECONDS = Configs.heartbeatMaxTimeSeconds();
         long timeSpent = new Date().getTime() - lastTimeDetailChange;
         return timeSpent > (HEARTBEAT_MAX_TIME_SECONDS * 1000L);
     }

@@ -19,7 +19,7 @@ import static com.csctracker.desktoppluguin.desktop.Core.isAtivo;
 @Slf4j
 public class NotificationSync {
 
-    private static final String DB_NAME = ConfigFile.dbNotificationsName();
+    private static final String DB_NAME = Configs.dbNotificationsName();
     private static final ConcurrentLinkedQueue<String> resincErrors = new ConcurrentLinkedQueue<>();
 
 
@@ -42,7 +42,7 @@ public class NotificationSync {
     public static void notificationTracker() {
         Thread thread = new Thread(() -> resincErrors());
         thread.start();
-        Long lastArrivalTime = ConfigFile.lastArrivalTime();
+        Long lastArrivalTime = Configs.lastArrivalTime();
         do {
             var xmlMapper = new XmlMapper();
             var jsonMapper = new ObjectMapper();
@@ -56,7 +56,9 @@ public class NotificationSync {
                     if (!json.contains("Notification incoming from")) {
                         sendJson(json);
                     } else {
-                        log.info("Notification descartada: " + json);
+                        if (Configs.isDebug()) {
+                            log.info("Notification descartada: " + json);
+                        }
                     }
                 }
             } catch (Exception e) {
@@ -64,10 +66,10 @@ public class NotificationSync {
                 log.info(e.getMessage());
                 break;
             }
-            ConfigFile.lastArrivalTime(lastArrivalTime);
+            Configs.lastArrivalTime(lastArrivalTime);
             resincErrors();
         } while (isAtivo());
-        if (com.csctracker.desktoppluguin.core.Core.isDebug() && !isAtivo()) {
+        if (Configs.isDebug() && !isAtivo()) {
             log.info("Stooped");
         }
     }
@@ -102,32 +104,32 @@ public class NotificationSync {
             var objectMapper = new ObjectMapper();
             jsonSend = objectMapper.writeValueAsString(message);
         } catch (JsonProcessingException e) {
-            e.printStackTrace();
+            log.error(e.getMessage());
         }
         send(jsonSend);
     }
 
     public static void send(String jsonSend) {
 
-        String url = ConfigFile.urlNotifySync();
+        String url = Configs.urlNotifySync();
         try {
-            var urlProxy = ConfigFile.urlProxy();
-            var port = ConfigFile.portProxy();
+            var urlProxy = Configs.urlProxy();
+            var port = Configs.portProxy();
             HttpRequestWithBody post = Unirest.post(url);
             if (urlProxy != null && port != null) {
                 post.proxy(urlProxy, port);
             }
             var response = post
                     .header("Content-Type", "application/json")
-                    .header("Authorization", "Bearer " + ConfigFile.tokenCscTracker())
+                    .header("Authorization", "Bearer " + Configs.tokenCscTracker())
                     .body(jsonSend).asString();
             if (response.getStatus() < 200 || response.getStatus() > 299) {
-                ConfigFile.changeSubDomain();
+                Configs.changeSubDomain();
                 SqlLitle.salva(jsonSend, "notify-error");
                 log.info(response.toString());
             }
         } catch (Exception e) {
-            ConfigFile.changeSubDomain();
+            Configs.changeSubDomain();
             try {
                 SqlLitle.salva(jsonSend, "notify-error");
             } catch (Exception ex) {

@@ -3,7 +3,6 @@ package com.csctracker.desktoppluguin.core;
 import com.csctracker.desktoppluguin.core.model.ApplicationDetail;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kong.unirest.Unirest;
-import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.FileNotFoundException;
@@ -26,8 +25,6 @@ public class Core {
     private static final ScheduledExecutorService schedulerErrors = Executors.newScheduledThreadPool(1);
     private static final ConcurrentLinkedQueue<ApplicationDetail> heartbeatsQueue = new ConcurrentLinkedQueue<>();
     private static final ConcurrentLinkedQueue<String> resincErrors = new ConcurrentLinkedQueue<>();
-    @Getter
-    private static boolean debug = true;
     private static ObjectMapper objectMapper = null;
     private static ScheduledFuture<?> scheduledFixture;
     private static ScheduledFuture<?> scheduledFixtureErrors;
@@ -54,7 +51,7 @@ public class Core {
     }
 
     private static void resincErrors() {
-        if (!ConfigFile.isCscTrackerOffline()) {
+        if (!Configs.isCscTrackerOffline()) {
             try {
                 SqlLitle.getErrors(resincErrors);
             } catch (SQLException e) {
@@ -104,23 +101,23 @@ public class Core {
 
     private static void send(String jsonString) {
         try {
-            if (!ConfigFile.isCscTrackerOffline()) {
+            if (!Configs.isCscTrackerOffline()) {
                 System.setProperty("org.apache.commons.logging.Log", "org.apache.commons.logging.impl.NoOpLog");
 
-                var urlProxy = ConfigFile.urlProxy();
-                var port = ConfigFile.portProxy();
-                var url = ConfigFile.urlCscTracker();
+                var urlProxy = Configs.urlProxy();
+                var port = Configs.portProxy();
+                var url = Configs.urlCscTracker();
                 var post = Unirest.post(url);
                 if (urlProxy != null && port != null) {
                     post.proxy(urlProxy, port);
                 }
                 var response = post
                         .header("Content-Type", "application/json")
-                        .header("Authorization", "Bearer " + ConfigFile.tokenCscTracker())
+                        .header("Authorization", "Bearer " + Configs.tokenCscTracker())
                         .body(jsonString)
                         .asString();
                 if (response.getStatus() < 200 || response.getStatus() > 299) {
-                    ConfigFile.changeSubDomain();
+                    Configs.changeSubDomain();
                     SqlLitle.salva(jsonString);
                     log.warn(response.getBody());
                 }
@@ -128,7 +125,7 @@ public class Core {
                 SqlLitle.salva(jsonString);
             }
         } catch (Exception e) {
-            ConfigFile.changeSubDomain();
+            Configs.changeSubDomain();
             try {
                 SqlLitle.salva(jsonString);
             } catch (Exception ex) {
@@ -150,14 +147,12 @@ public class Core {
     }
 
     public static void setupDebugging() {
-        var debug = SqlLitle.getConfig("debug");
-        Core.debug = debug != null && debug.trim().equals("true");
-        if (Core.debug) {
+        if (Configs.isDebug()) {
             log.info("Debugging is enabled");
         } else {
             PrintStream fileStream = null;
             try {
-                fileStream = new PrintStream(ConfigFile.getResourcesLocation() + "\\csctracker-desktop-plugin.log");
+                fileStream = new PrintStream(Configs.getResourcesLocation() + "\\csctracker-desktop-plugin.log");
                 System.setOut(fileStream);
                 System.setErr(fileStream);
             } catch (FileNotFoundException e) {
