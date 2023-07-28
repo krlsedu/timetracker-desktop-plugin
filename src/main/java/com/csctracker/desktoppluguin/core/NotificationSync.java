@@ -53,7 +53,11 @@ public class NotificationSync {
                     var node = xmlMapper.readTree(notification.getText());
                     lastArrivalTime = notification.getArrivalTime();
                     var json = jsonMapper.writeValueAsString(node);
-                    sendJson(json);
+                    if (!json.contains("Notification incoming from")) {
+                        sendJson(json);
+                    } else {
+                        log.info("Notification descartada: " + json);
+                    }
                 }
             } catch (Exception e) {
                 Thread.currentThread().interrupt();
@@ -92,10 +96,10 @@ public class NotificationSync {
     }
 
     private static void sendJson(String json) {
-        String jsonSend = json;
-        Message message = new Message(json);
+        var jsonSend = json;
+        var message = new Message(json);
         try {
-            ObjectMapper objectMapper = new ObjectMapper();
+            var objectMapper = new ObjectMapper();
             jsonSend = objectMapper.writeValueAsString(message);
         } catch (JsonProcessingException e) {
             e.printStackTrace();

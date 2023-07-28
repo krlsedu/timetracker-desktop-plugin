@@ -1,5 +1,7 @@
 package com.csctracker.desktoppluguin.core;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.io.File;
 import java.sql.*;
 import java.text.SimpleDateFormat;
@@ -9,6 +11,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+@Slf4j
 public class SqlLitle {
 
     private static final String DB_NAME = ".csctracker-desktop-plugin.db";
@@ -230,15 +233,16 @@ public class SqlLitle {
             preparedStatement.setString(1, name);
 
             ResultSet resultSet = preparedStatement.executeQuery();
-            var result = "0";
+            String result = null;
             if (resultSet.next()) {
                 result = resultSet.getString(1);
             }
             conn.close();
             return result;
         } catch (Exception e) {
+            log.error(e.getMessage());
         }
-        return "0";
+        return null;
     }
 
 
@@ -253,7 +257,7 @@ public class SqlLitle {
             preparedStatement.execute();
             conn.close();
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            log.error(e.getMessage());
         }
     }
 }

@@ -213,7 +213,7 @@ public class ConfigFile {
         int pos = Integer.parseInt(posicao);
         var subDomainsSt = SqlLitle.getConfig("subdomains");
         var subDomains = subDomainsSt.split(",");
-        if (pos > subDomains.length) {
+        if (pos >= subDomains.length) {
             pos = 1;
         } else {
             pos++;
@@ -228,6 +228,7 @@ public class ConfigFile {
         var subDomains = subDomainsSt.split(",");
         if (pos > subDomains.length) {
             pos = 1;
+            SqlLitle.saveConfig("subdomainActive", String.valueOf(pos));
         }
         return subDomains[pos - 1];
     }
