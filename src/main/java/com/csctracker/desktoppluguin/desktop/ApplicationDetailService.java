@@ -57,7 +57,9 @@ public class ApplicationDetailService {
                         aplicationDetail.setName(aplicationDetail.getName().replace("s/\\x00//g", "").replace("\u0000", ""));
                     }
                 } catch (Exception e) {
-                    //
+                    if (Configs.isDebug()) {
+                        log.error("Error on get app details", e);
+                    }
                 }
                 aplicationDetail.setActivityDetail(foregroundDeteail);
                 aplicationDetail.setDateIni(new Date());
@@ -100,7 +102,9 @@ public class ApplicationDetailService {
                         aplicationDetail.setName(aplicationDetail.getName().replace("s/\\x00//g", "").replace("\u0000", ""));
                     }
                 } catch (Exception e) {
-                    //
+                    if (Configs.isDebug()) {
+                        log.error("Error on get app details", e);
+                    }
                 }
                 aplicationDetail.setActivityDetail(foregroundDeteail);
                 aplicationDetail.setDateIni(new Date());
