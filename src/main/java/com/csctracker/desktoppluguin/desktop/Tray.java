@@ -49,7 +49,7 @@ public class Tray {
 			try {
 				SqlLitle.syncBkps();
 			} catch (Exception ex) {
-				System.out.println(ex.getMessage());
+				log.error(ex.getMessage());
 			}
 		});
 
@@ -58,7 +58,7 @@ public class Tray {
 			try {
 				SqlLitle.generateBackup();
 			} catch (Exception ex) {
-				System.out.println(ex.getMessage());
+				log.error(ex.getMessage());
 			}
 		});
 

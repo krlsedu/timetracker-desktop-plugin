@@ -40,38 +40,50 @@ public class NotificationSync {
     }
 
     public static void notificationTracker() {
-        Thread thread = new Thread(() -> resincErrors());
+        var thread = new Thread(NotificationSync::notificationTrackerTread);
+        thread.start();
+    }
+
+    public static void notificationTrackerTread() {
+        Thread thread = new Thread(NotificationSync::resincErrors);
         thread.start();
         Long lastArrivalTime = Configs.lastArrivalTime();
+        log.info("NotificationSync Started");
         do {
-            var xmlMapper = new XmlMapper();
-            var jsonMapper = new ObjectMapper();
-            try {
-                Thread.sleep(WAIT_TIME);
-                var notifications = getNotifications(lastArrivalTime);
-                for (Notification notification : notifications) {
-                    var node = xmlMapper.readTree(notification.getText());
-                    lastArrivalTime = notification.getArrivalTime();
-                    var json = jsonMapper.writeValueAsString(node);
-                    if (!json.contains("Notification incoming from")) {
-                        sendJson(json);
-                    } else {
-                        if (Configs.isDebug()) {
-                            log.info("Notification descartada: " + json);
-                        }
+            lastArrivalTime = checkNotifications(lastArrivalTime);
+        } while (isAtivo());
+        log.warn("NotificationSync Stoped");
+        if (isAtivo()) {
+            notificationTracker();
+        }
+    }
+
+    private static Long checkNotifications(Long lastArrivalTime) {
+        var xmlMapper = new XmlMapper();
+        var jsonMapper = new ObjectMapper();
+        try {
+            Thread.sleep(WAIT_TIME);
+            var notifications = getNotifications(lastArrivalTime);
+            for (Notification notification : notifications) {
+                var node = xmlMapper.readTree(notification.getText());
+                lastArrivalTime = notification.getArrivalTime();
+                var json = jsonMapper.writeValueAsString(node);
+                if (!json.contains("Notification incoming from")) {
+                    sendJson(json);
+                } else {
+                    if (Configs.isDebug()) {
+                        log.info("Notification descartada: " + json);
                     }
                 }
-            } catch (Exception e) {
-                Thread.currentThread().interrupt();
-                log.info(e.getMessage());
-                break;
             }
+        } catch (Exception e) {
+            log.error(e.getMessage());
+        } finally {
             Configs.lastArrivalTime(lastArrivalTime);
-            resincErrors();
-        } while (isAtivo());
-        if (Configs.isDebug() && !isAtivo()) {
-            log.info("Stooped");
         }
+        Configs.lastArrivalTime(lastArrivalTime);
+        resincErrors();
+        return lastArrivalTime;
     }
 
     private static void resincErrors() {
