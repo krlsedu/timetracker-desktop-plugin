@@ -30,40 +30,44 @@ public class Core {
     }
 
     private static void tracker() {
-        if (Configs.isDebug()) {
-            log.info("Initiated");
-        }
-        if (!SystemInfo.isWindows()) {
-            var linuxSystemInfo = new LinuxSystemInfo();
-            linuxSystemInfo.start();
-            do {
-                try {
-                    Thread.sleep(WAIT_TIME);
-                    ApplicationDetailService.generateApplicationDetailInfoLinux(linuxSystemInfo);
-                } catch (Exception e) {
-                    Thread.currentThread().interrupt();
-                    error(e);
-                    break;
-                }
-            } while (isAtivo());
-        } else {
-            do {
-                try {
-                    Thread.sleep(WAIT_TIME);
-                    WinDef.HWND foregroundWindow = User32.INSTANCE.GetForegroundWindow();
-
-                    if (foregroundWindow != null) {
-                        ApplicationDetailService.generateApplicationDetailInfo(foregroundWindow);
+        try {
+            if (Configs.isDebug()) {
+                log.info("Initiated");
+            }
+            if (!SystemInfo.isWindows()) {
+                var linuxSystemInfo = new LinuxSystemInfo();
+                linuxSystemInfo.start();
+                do {
+                    try {
+                        Thread.sleep(WAIT_TIME);
+                        ApplicationDetailService.generateApplicationDetailInfoLinux(linuxSystemInfo);
+                    } catch (Exception e) {
+                        Thread.currentThread().interrupt();
+                        error(e);
+                        break;
                     }
-                } catch (Exception e) {
-                    Thread.currentThread().interrupt();
-                    error(e);
-                    break;
-                }
-            } while (isAtivo());
-        }
-        if (Configs.isDebug() && !isAtivo()) {
-            log.info("Stooped");
+                } while (isAtivo());
+            } else {
+                do {
+                    try {
+                        Thread.sleep(WAIT_TIME);
+                        WinDef.HWND foregroundWindow = User32.INSTANCE.GetForegroundWindow();
+
+                        if (foregroundWindow != null) {
+                            ApplicationDetailService.generateApplicationDetailInfo(foregroundWindow);
+                        }
+                    } catch (Exception e) {
+                        Thread.currentThread().interrupt();
+                        error(e);
+                        break;
+                    }
+                } while (isAtivo());
+            }
+            if (Configs.isDebug() && !isAtivo()) {
+                log.info("Stooped");
+            }
+        } catch (Exception e) {
+            log.error(e.getMessage());
         }
     }
 
