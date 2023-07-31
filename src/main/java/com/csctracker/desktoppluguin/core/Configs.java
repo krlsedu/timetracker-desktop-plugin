@@ -189,18 +189,29 @@ public class Configs {
 
     public static Integer heartbeatMaxTimeSeconds() {
         try {
-            return Integer.parseInt(SqlLitle.getConfig("heartbeatMaxTimeSeconds"));
+            var heartbeatMaxTimeSeconds = SqlLitle.getConfig("heartbeatMaxTimeSeconds");
+            if (heartbeatMaxTimeSeconds == null) {
+                return 60;
+            }
+            return Integer.parseInt(heartbeatMaxTimeSeconds);
         } catch (NumberFormatException e) {
-            return 10;
+            return 60;
         }
     }
 
     public static String urlCscTracker() {
-        return getDomain() + SqlLitle.getConfig("urlCscTracker");
+        var urlCscTracker = SqlLitle.getConfig("urlCscTracker");
+        if (urlCscTracker == null) {
+            urlCscTracker = SqlLitle.DEFAULT_URL_USAGE_INFO;
+        }
+        return getDomain() + urlCscTracker;
     }
 
     public static String getDomain() {
         var domain = SqlLitle.getConfig("domain");
+        if (domain == null) {
+            domain = SqlLitle.DEFAULT_URL_DOMAIN;
+        }
         domain = domain.replace("subdomain", getSubDomain());
         return domain;
     }
@@ -212,6 +223,9 @@ public class Configs {
         }
         int pos = Integer.parseInt(posicao);
         var subDomainsSt = SqlLitle.getConfig("subdomains");
+        if (subDomainsSt == null) {
+            subDomainsSt = SqlLitle.DEFAULT_SUBDOMAINS;
+        }
         var subDomains = subDomainsSt.split(",");
         if (pos >= subDomains.length) {
             pos = 1;
@@ -223,8 +237,14 @@ public class Configs {
 
     public static String getSubDomain() {
         var posicao = SqlLitle.getConfig("subdomainActive");
+        if (posicao == null) {
+            posicao = "1";
+        }
         int pos = Integer.parseInt(posicao);
         var subDomainsSt = SqlLitle.getConfig("subdomains");
+        if (subDomainsSt == null) {
+            subDomainsSt = SqlLitle.DEFAULT_SUBDOMAINS;
+        }
         var subDomains = subDomainsSt.split(",");
         if (pos > subDomains.length) {
             pos = 1;
@@ -234,20 +254,32 @@ public class Configs {
     }
 
     public static String urlNotifySync() {
-        return getDomain() + SqlLitle.getConfig("urlNotifySync");
+        var urlNotifySync = SqlLitle.getConfig("urlNotifySync");
+        if (urlNotifySync == null) {
+            urlNotifySync = SqlLitle.DEFAULT_URL_NOTIFY_SYNC;
+        }
+        return getDomain() + urlNotifySync;
     }
 
     public static String tokenCscTracker() {
-        return SqlLitle.getConfig("tokenCscTracker");
+        var tokenCscTracker = SqlLitle.getConfig("tokenCscTracker");
+        if (tokenCscTracker == null) {
+            tokenCscTracker = "";
+        }
+        return tokenCscTracker;
     }
 
     public static String dbNotificationsName() {
-        return getUserFolderLocation() + SqlLitle.getConfig("dbNotificationsName");
+        return getUserFolderLocation() + "\\AppData\\Local\\Microsoft\\Windows\\Notifications\\wpndatabase.db";
     }
 
     public static Long lastArrivalTime() {
         try {
-            return Long.parseLong(SqlLitle.getConfig("lastArrivalTime"));
+            var lastArrivalTime = SqlLitle.getConfig("lastArrivalTime");
+            if (lastArrivalTime == null) {
+                return 0L;
+            }
+            return Long.parseLong(lastArrivalTime);
         } catch (NumberFormatException e) {
             return 0L;
         }

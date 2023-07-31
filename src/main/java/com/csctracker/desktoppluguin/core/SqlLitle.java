@@ -16,6 +16,10 @@ public class SqlLitle {
 
     private static final String DB_NAME = ".csctracker-desktop-plugin.db";
     private static final String BKPS = "bkps/";
+    public static final String DEFAULT_URL_USAGE_INFO = "/backend/usage-info";
+    public static final String DEFAULT_URL_NOTIFY_SYNC = "/notify-sync/message/";
+    public static final String DEFAULT_URL_DOMAIN = "https://subdomain.csctracker.com";
+    public static final String DEFAULT_SUBDOMAINS = "gtw,back";
 
     public static void createNewDatabase(String url) throws SQLException {
         Connection conn = DriverManager.getConnection(url);
@@ -26,9 +30,8 @@ public class SqlLitle {
         statement.execute("CREATE TABLE configs( name text PRIMARY KEY, value text)");
         statement.execute("insert into configs (name, value) values ('lastArrivalTime', '0')");
         statement.execute("insert into configs (name, value) values ('subdomainActive', '1')");
-        statement.execute("insert into configs (name, value) values ('urlCscTracker', '/backend/usage-info')");
-        statement.execute("insert into configs (name, value) values ('dbNotificationsName', '\\AppData\\Local\\Microsoft\\Windows\\Notifications\\wpndatabase.db')");
-        statement.execute("insert into configs (name, value) values ('urlNotifySync', '/notify-sync/message/')");
+        statement.execute("insert into configs (name, value) values ('urlCscTracker', '" + SqlLitle.DEFAULT_URL_USAGE_INFO + "')");
+        statement.execute("insert into configs (name, value) values ('urlNotifySync', '" + SqlLitle.DEFAULT_URL_NOTIFY_SYNC + "')");
         statement.execute("insert into configs (name, value) values ('heartbeatMaxTimeSeconds', '60')");
 
         var tokenCscTracker = Configs.get("settings", "tokenCscTracker");
@@ -36,13 +39,13 @@ public class SqlLitle {
 
         var subdomains = Configs.get("settings", "subdomains");
         if (subdomains == null) {
-            subdomains = "gtw,back";
+            subdomains = SqlLitle.DEFAULT_SUBDOMAINS;
         }
         statement.execute("insert into configs (name, value) values ('subdomains', '" + subdomains + "')");
 
         var domain = Configs.get("settings", "domain");
         if (domain == null) {
-            domain = "https://subdomain.csctracker.com";
+            domain = SqlLitle.DEFAULT_URL_DOMAIN;
         }
         statement.execute("insert into configs (name, value) values ('domain','" + domain + "')");
 
