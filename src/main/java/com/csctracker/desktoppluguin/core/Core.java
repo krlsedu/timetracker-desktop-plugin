@@ -10,11 +10,11 @@ import java.io.PrintStream;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
-
 
 
 @Slf4j
@@ -114,6 +114,7 @@ public class Core {
                 var response = post
                         .header("Content-Type", "application/json")
                         .header("Authorization", "Bearer " + Configs.tokenCscTracker())
+                        .header("x-correlation-id", "CscTrackerDesktopPlugin-" + UUID.randomUUID())
                         .body(jsonString)
                         .asString();
                 if (response.getStatus() < 200 || response.getStatus() > 299) {

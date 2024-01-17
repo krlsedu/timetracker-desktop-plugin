@@ -11,6 +11,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import static com.csctracker.desktoppluguin.desktop.Core.WAIT_TIME;
@@ -134,6 +135,7 @@ public class NotificationSync {
             var response = post
                     .header("Content-Type", "application/json")
                     .header("Authorization", "Bearer " + Configs.tokenCscTracker())
+                    .header("x-correlation-id", "CscTrackerDesktopPlugin-" + UUID.randomUUID())
                     .body(jsonSend).asString();
             if (response.getStatus() < 200 || response.getStatus() > 299) {
                 Configs.changeSubDomain();
